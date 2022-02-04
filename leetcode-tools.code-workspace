@@ -1,0 +1,19 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "cSpell.words": [
+            "camelcase",
+            "csrfmiddlewaretoken",
+            "csrftoken",
+            "eqeqeq",
+            "leetcode",
+            "notac",
+            "Testcase",
+            "Testcases"
+        ]
+    },
+}
