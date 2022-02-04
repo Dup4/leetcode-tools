@@ -1,24 +1,47 @@
 {
-  "name": "leetcode-tools",
-  "version": "1.0.0",
-  "description": "A cli tool to enjoy leetcode!",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Dup4/leetcode-tools.git"
-  },
-  "keywords": [
-    "leetcode",
-    "tools",
-    "cli"
-  ],
-  "author": "Dup4",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Dup4/leetcode-tools/issues"
-  },
-  "homepage": "https://github.com/Dup4/leetcode-tools#readme"
+    "name": "leetcode-tools",
+    "version": "1.0.0",
+    "description": "A cli tool to enjoy leetcode!",
+    "main": "dist/cjs/index.js",
+    "types": "dist/cjs/index.d.ts",
+    "module": "dist/esm/index.js",
+    "files": [
+        "dist/",
+        "LICENSE",
+        "README.md"
+    ],
+    "scripts": {
+        "prepare": "ts-patch install -s",
+        "build": "rm -rf dist && tsc -p tsconfig.json && tsc -p tsconfig-esm.json",
+        "start": "node dist/cjs",
+        "lint": "eslint src --ext .ts",
+        "test": "mocha -r ts-node/register test/**/*.ts --timeout 10000"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Dup4/leetcode-tools.git"
+    },
+    "keywords": [
+        "leetcode",
+        "tools",
+        "cli"
+    ],
+    "author": "Dup4",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/Dup4/leetcode-tools/issues"
+    },
+    "homepage": "https://github.com/Dup4/leetcode-tools#readme",
+    "devDependencies": {
+        "@types/mocha": "^9.1.0",
+        "@typescript-eslint/eslint-plugin": "^5.10.2",
+        "@typescript-eslint/parser": "^5.10.2",
+        "eslint": "^8.8.0",
+        "eslint-config-google": "^0.14.0",
+        "mocha": "^9.2.0",
+        "ts-node": "^10.4.0",
+        "ts-patch": "^2.0.1",
+        "typescript": "^4.5.5",
+        "typescript-transform-paths": "^3.3.1"
+    }
 }

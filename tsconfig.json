@@ -1,0 +1,43 @@
+{
+    "compilerOptions": {
+        "target": "ES5",
+        "module": "CommonJS",
+        "moduleResolution": "node",
+        "allowJs": false,
+        "declaration": true,
+        "sourceMap": true,
+        "rootDir": "./src",
+        "outDir": "./dist/cjs",
+        "strict": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "baseUrl": "./",
+        "paths": {
+            "@/*": [
+                "src/*"
+            ],
+        },
+        "plugins": [
+            {
+                "transform": "typescript-transform-paths"
+            },
+            {
+                "transform": "typescript-transform-paths",
+                "afterDeclarations": true
+            }
+        ],
+    },
+    "include": [
+        "./src",
+    ],
+    "exclude": [
+        "./dist",
+        "./test",
+    ],
+    "ts-node": {
+        "transpileOnly": true,
+        "require": [
+            "typescript-transform-paths/register"
+        ],
+    }
+}
