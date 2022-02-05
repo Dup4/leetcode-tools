@@ -4,6 +4,7 @@ import * as path from "path";
 import * as ErrorMsg from "./errorMsg";
 import Log from "./log";
 import { CodeTemplateReplaceContent } from "./interface";
+import { Sleep } from "./utils";
 
 export async function New(slug: string, dst?: string) {
     const problem = await Problem.build(slug);
@@ -66,10 +67,27 @@ export async function Code(
 
 export async function Submit(slug: string, langSlug: LangSlug, code: string) {
     const problem = await Problem.build(slug);
-    await problem.submit(langSlug, code);
+    const submission = await problem.submit(langSlug, code);
+
     Log.Info(
-        `submit successfully. [slug=${slug}, langSlug=${langSlug}, code=${code}]`
+        `submit successfully. [slug=${slug}, langSlug=${LangSlug[langSlug]}]`
     );
+
+    for (let i = 0; i < 3; i++) {
+        await submission.detail();
+        if (submission.statusDisplay === "") {
+            Sleep(500);
+            continue;
+        }
+    }
+
+    Log.Info(`id: ${submission.id}
+lang: ${submission.lang}
+runtime: ${submission.runtime}
+memory: ${submission.memory}
+status: ${submission.statusDisplay}
+timestamp: ${submission.timestamp}
+submissionUrl: ${submission.getSubmissionUrl()}`);
 }
 
 async function getStatement(problem: Problem, dst: string) {

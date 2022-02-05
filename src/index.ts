@@ -35,6 +35,7 @@ async function addProblemProgram(program: Command) {
         const newCommand = subProgram.command("new <slug>");
         const pullCommand = subProgram.command("pull");
         const codeCommand = subProgram.command("code");
+        const submitCommand = subProgram.command("submit");
 
         const newAction = async (slug: string) => {
             const options = newCommand.opts();
@@ -115,6 +116,38 @@ async function addProblemProgram(program: Command) {
             }
         };
 
+        const submitAction = async () => {
+            const options = submitCommand.opts();
+            let { slug, dst, langSlug, fileName } = options;
+
+            try {
+                if (!slug) {
+                    slug = getDefaultProblemSlug();
+                }
+
+                if (!dst) {
+                    dst = getDefaultDst();
+                }
+
+                if (!langSlug) {
+                    langSlug = getDefaultLangSlug();
+                } else {
+                    langSlug = LangSlug[langSlug];
+                }
+
+                fileName = SolutionFileName(langSlug, fileName);
+                const codePath = path.join(dst, fileName);
+
+                Log.Info(`codePath: ${codePath}`);
+
+                const code = fs.readFileSync(codePath).toString();
+
+                await Problem.Submit(slug, langSlug, code);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
         newCommand.option("-d, --dst <string>").action(newAction);
 
         pullCommand
@@ -128,6 +161,13 @@ async function addProblemProgram(program: Command) {
             .option("--langSlug <string>")
             .option("--fileName <string>")
             .action(codeAction);
+
+        submitCommand
+            .option("-s --slug <string>")
+            .option("-d --dst <string>")
+            .option("--langSlug <string>")
+            .option("--fileName <string>")
+            .action(submitAction);
     };
 
     makeProblemCommand("problem");
