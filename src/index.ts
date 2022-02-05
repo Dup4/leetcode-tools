@@ -179,11 +179,19 @@ async function addProblemProgram(program: Command) {
 
 async function addMkdocsProgram(program: Command) {
     const getDefaultSrc = () => {
+        return path.join(process.env.INIT_CWD ?? "", "docs");
+    };
+
+    const getDefaultLeetcodeSrc = () => {
         return path.join(process.env.INIT_CWD ?? "", "leetcode");
     };
 
     const getDefaultDst = () => {
-        return path.join(process.env.INIT_CWD ?? "", "docs");
+        return path.join(process.env.INIT_CWD ?? "", "_docs");
+    };
+
+    const getDefaultNavTemplateFile = () => {
+        return path.join(process.env.INIT_CWD ?? "", "nav.template.yml");
     };
 
     const getDefaultConfigTemplateFile = () => {
@@ -202,7 +210,14 @@ async function addMkdocsProgram(program: Command) {
 
         const buildAction = async () => {
             const options = buildCommand.opts();
-            const { src, dst, configTemplateFile, configDstFile } = options;
+            const {
+                src,
+                leetcodeSrc,
+                dst,
+                navTemplateFile,
+                configTemplateFile,
+                configDstFile,
+            } = options;
 
             try {
                 if (!fs.existsSync(configTemplateFile)) {
@@ -218,13 +233,23 @@ async function addMkdocsProgram(program: Command) {
                 fs.mkdirSync(dst, { recursive: true });
                 fs.copyFileSync(configTemplateFile, configDstFile);
 
-                const navObject: { nav: any } = { nav: [] };
+                shell.cp("-R", `${src}/*`, dst);
+
+                let navObject: any = null;
+
+                if (fs.existsSync(navTemplateFile)) {
+                    navObject = Yaml.load(
+                        fs.readFileSync(navTemplateFile, "utf8")
+                    );
+                } else {
+                    navObject = { nav: [] };
+                }
 
                 {
-                    const problemSrcPath = path.join(src, "problem");
+                    const problemSrcPath = path.join(leetcodeSrc, "problem");
                     const problemDstPath = path.join(dst, "problem");
 
-                    fs.mkdirSync(problemDstPath);
+                    shell.cp("-R", problemSrcPath, problemDstPath);
 
                     navObject.nav.push({
                         Problem: await Mkdocs.Build(
@@ -244,7 +269,13 @@ async function addMkdocsProgram(program: Command) {
 
         buildCommand
             .option("-s --src <string>", "", getDefaultSrc())
+            .option("--leetcodeSrc <string>", "", getDefaultLeetcodeSrc())
             .option("-d --dst <string>", "", getDefaultDst())
+            .option(
+                "-n --navTemplateFile <string>",
+                "",
+                getDefaultNavTemplateFile()
+            )
             .option(
                 "--configTemplateFile <string>",
                 "",
