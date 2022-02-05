@@ -224,7 +224,7 @@ async function addMkdocsProgram(program: Command) {
                     const problemSrcPath = path.join(src, "problem");
                     const problemDstPath = path.join(dst, "problem");
 
-                    fs.mkdirSync(dst);
+                    fs.mkdirSync(problemDstPath);
 
                     navObject.nav.push({
                         Problem: await Mkdocs.Build(
