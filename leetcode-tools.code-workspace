@@ -1,22 +1,23 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"cSpell.words": [
-			"camelcase",
-			"csrfmiddlewaretoken",
-			"csrftoken",
-			"eqeqeq",
-			"langslug",
-			"leetcode",
-			"noopener",
-			"noreferrer",
-			"notac",
-			"Testcase",
-			"Testcases"
-		]
-	},
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "cSpell.words": [
+            "camelcase",
+            "csrfmiddlewaretoken",
+            "csrftoken",
+            "eqeqeq",
+            "langslug",
+            "leetcode",
+            "mkdocs",
+            "noopener",
+            "noreferrer",
+            "notac",
+            "Testcase",
+            "Testcases"
+        ]
+    },
 }

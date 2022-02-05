@@ -4,12 +4,15 @@ import { Command } from "commander";
 import Dotenv from "dotenv";
 import * as Leetcode from "./leetcode";
 import * as Problem from "./problem";
+import * as Mkdocs from "./mkdocs";
 import path from "path";
 import Log from "./log";
 import * as ErrorMsg from "./errorMsg";
 import { CodeTemplateFileName, SolutionFileName } from "./interface";
 import { LangSlug } from "leetcode-api-typescript";
 import fs from "fs";
+import shell from "shelljs";
+import Yaml from "js-yaml";
 
 async function addProblemProgram(program: Command) {
     const getDefaultProblemSlug = () => {
@@ -174,6 +177,83 @@ async function addProblemProgram(program: Command) {
     makeProblemCommand("p");
 }
 
+async function addMkdocsProgram(program: Command) {
+    const getDefaultSrc = () => {
+        return path.join(process.env.INIT_CWD ?? "", "leetcode");
+    };
+
+    const getDefaultDst = () => {
+        return path.join(process.env.INIT_CWD ?? "", "docs");
+    };
+
+    const getDefaultConfigTemplateFile = () => {
+        return path.join(process.env.INIT_CWD ?? "", "mkdocs.template.yml");
+    };
+
+    const getDefaultConfigDstFile = () => {
+        return path.join(process.env.INIT_CWD ?? "", "mkdocs.yml");
+    };
+
+    const makeMkdocsCommand = (name: string) => {
+        const subProgram = program.command(name);
+        subProgram.description("some operations related to the markdown");
+
+        const buildCommand = subProgram.command("build");
+
+        const buildAction = async () => {
+            const options = buildCommand.opts();
+            const { src, dst, configTemplateFile, configDstFile } = options;
+
+            try {
+                if (!fs.existsSync(configTemplateFile)) {
+                    throw new Error(
+                        `${ErrorMsg.FileDoesNotExist}. [file=${configTemplateFile}]`
+                    );
+                }
+
+                if (fs.existsSync(dst)) {
+                    fs.rmSync(dst, { recursive: true });
+                }
+
+                fs.mkdirSync(dst, { recursive: true });
+                fs.copyFileSync(configTemplateFile, configDstFile);
+
+                const navObject: { nav: any } = { nav: [] };
+
+                {
+                    const problemSrcPath = path.join(src, "problem");
+                    const problemDstPath = path.join(dst, "problem");
+
+                    shell.cp("-R", problemSrcPath, problemDstPath);
+
+                    navObject.nav.push({
+                        Problem: await Mkdocs.Build(problemDstPath, "problem"),
+                    });
+                }
+
+                const navYamlString = Yaml.dump(navObject);
+                fs.appendFileSync(configDstFile, "\n" + navYamlString);
+            } catch (err) {
+                Log.Error(err);
+            }
+        };
+
+        buildCommand
+            .option("-s --src <string>", "", getDefaultSrc())
+            .option("-d --dst <string>", "", getDefaultDst())
+            .option(
+                "--configTemplateFile <string>",
+                "",
+                getDefaultConfigTemplateFile()
+            )
+            .option("--configDstFile <string>", "", getDefaultConfigDstFile())
+            .action(buildAction);
+    };
+
+    makeMkdocsCommand("mkdocs");
+    makeMkdocsCommand("md");
+}
+
 (async () => {
     Dotenv.config();
     await Leetcode.Login();
@@ -182,6 +262,7 @@ async function addProblemProgram(program: Command) {
     program.description("A cli tool to enjoy leetcode!");
 
     addProblemProgram(program);
+    addMkdocsProgram(program);
 
     await program.parseAsync(process.argv);
 })();
