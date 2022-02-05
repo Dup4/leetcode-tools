@@ -10,6 +10,21 @@ export async function Build(
     const navList: Array<Record<string, string>> = [];
 
     const dirs = fs.readdirSync(src);
+    dirs.sort((a: string, b: string) => {
+        const _a = Number(a.split(".")[0]);
+        const _b = Number(b.split(".")[0]);
+
+        if (_a < _b) {
+            return -1;
+        }
+
+        if (_a > _b) {
+            return 1;
+        }
+
+        return 0;
+    });
+
     for (const dir of dirs) {
         buildProblem(path.join(src, dir), path.join(dst, dir), dir);
         navList.push({ [dir]: path.join(docsRelativePath, dir, "index.md") });
