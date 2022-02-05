@@ -22,17 +22,17 @@ async function buildProblem(src: string, filename: string) {
 ## Statement
 
     === "English"
-    --8<-- "statement.en_US.md"
+    --8<-- "${src}/statement.en_US.md"
 
     === "简体中文"
-    --8<-- "statement.zh_CN.md"
+    --8<-- "${src}/statement.zh_CN.md"
 
 
 ## Solution
 
     === "Cpp"
     \`\`\`cpp
-    --8<-- "solution.cpp"
+    --8<-- "${src}/solution.cpp"
     \`\`\`
 `;
 
