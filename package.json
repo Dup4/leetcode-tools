@@ -13,7 +13,7 @@
     "scripts": {
         "prepare": "ts-patch install -s",
         "build": "rm -rf dist && tsc -p tsconfig.json",
-        "start": "node dist",
+        "start": "ts-node ./src",
         "lint": "eslint src --ext .ts",
         "test": "mocha -r ts-node/register test/**/*.ts --timeout 10000"
     },
@@ -45,7 +45,8 @@
         "typescript-transform-paths": "^3.3.1"
     },
     "dependencies": {
+        "commander": "^9.0.0",
         "dotenv": "^16.0.0",
-        "leetcode-api-typescript": "^1.8.3"
+        "leetcode-api-typescript": "^1.8.4"
     }
 }

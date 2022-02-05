@@ -402,6 +402,11 @@ combined-stream@^1.0.6, combined-stream@^1.0.8, combined-stream@~1.0.6:
   dependencies:
     delayed-stream "~1.0.0"
 
+commander@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-9.0.0.tgz#86d58f24ee98126568936bd1d3574e0308a99a40"
+  integrity sha512-JJfP2saEKbQqvW+FI93OYUB4ByV5cizMpFMiiJI8xDbBvQvSkIk0VvQdn1CZ8mqAO8Loq2h0gYTYtDFUZUeERw==
+
 concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
@@ -1064,10 +1069,10 @@ kind-of@^6.0.2:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
-leetcode-api-typescript@^1.8.3:
-  version "1.8.3"
-  resolved "https://registry.yarnpkg.com/leetcode-api-typescript/-/leetcode-api-typescript-1.8.3.tgz#59310ac7b6a5b189328b35b3b4366e15473a83fe"
-  integrity sha512-Jdx0M2Zp38M7YkCYtbimtxo3I83EYy/qepFClK4e8NME9O7So99kpJaMsQSw4OsRDH3i2Lcv6QgNFZLavxshFw==
+leetcode-api-typescript@^1.8.4:
+  version "1.8.4"
+  resolved "https://registry.yarnpkg.com/leetcode-api-typescript/-/leetcode-api-typescript-1.8.4.tgz#390288d67e3e1b3ad6e2c9feb7cb85bd349e5d12"
+  integrity sha512-pwqQStWHc5ZDlrUdL/p22s90grVpImyqar14WwsZ8dDi70rsZaMzXRjGPSaFodogyKgWuF91+GViiose6y3+XQ==
   dependencies:
     dotenv "^16.0.0"
     graphql "^16.3.0"
