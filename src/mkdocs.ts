@@ -3,20 +3,22 @@ import path from "path";
 
 export async function Build(
     src: string,
+    dst: string,
     docsRelativePath: string
 ): Promise<any> {
     const navList: Array<Record<string, string>> = [];
 
     const dirs = fs.readdirSync(src);
     for (const dir of dirs) {
-        buildProblem(path.join(src, dir), dir);
+        fs.mkdirSync(path.join(dst, dir));
+        buildProblem(path.join(src, dir), path.join(dst, dir), dir);
         navList.push({ [dir]: path.join(docsRelativePath, dir, "index.md") });
     }
 
     return navList;
 }
 
-async function buildProblem(src: string, filename: string) {
+async function buildProblem(src: string, dst: string, filename: string) {
     const mdTemplate = `# ${filename}
 
 ## Statement
@@ -36,5 +38,5 @@ async function buildProblem(src: string, filename: string) {
     \`\`\`
 `;
 
-    fs.writeFileSync(path.join(src, "index.md"), mdTemplate);
+    fs.writeFileSync(path.join(dst, "index.md"), mdTemplate);
 }

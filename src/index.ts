@@ -224,10 +224,14 @@ async function addMkdocsProgram(program: Command) {
                     const problemSrcPath = path.join(src, "problem");
                     const problemDstPath = path.join(dst, "problem");
 
-                    shell.cp("-R", problemSrcPath, problemDstPath);
+                    fs.mkdirSync(dst);
 
                     navObject.nav.push({
-                        Problem: await Mkdocs.Build(problemDstPath, "problem"),
+                        Problem: await Mkdocs.Build(
+                            problemSrcPath,
+                            problemDstPath,
+                            "problem"
+                        ),
                     });
                 }
 
