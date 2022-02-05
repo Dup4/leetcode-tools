@@ -38,7 +38,7 @@ async function buildProblem(src: string, dst: string, filename: string) {
 
 ## Statement
 
-??? question
+??? question "English Statement"
     --8<-- "${src}/statement.en_US.md"
 
 --8<-- "${src}/statement.zh_CN.md"
