@@ -45,8 +45,9 @@
         "typescript-transform-paths": "^3.3.1"
     },
     "dependencies": {
+        "chalk": "4.1.0",
         "commander": "^9.0.0",
         "dotenv": "^16.0.0",
-        "leetcode-api-typescript": "^1.8.4"
+        "leetcode-api-typescript": "^1.8.5"
     }
 }

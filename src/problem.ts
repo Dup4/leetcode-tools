@@ -1,7 +1,9 @@
-import { Problem, Config } from "leetcode-api-typescript";
+import { Problem, Config, LangSlug } from "leetcode-api-typescript";
 import * as fs from "fs";
 import * as path from "path";
 import * as ErrorMsg from "./errorMsg";
+import Log from "./log";
+import { CodeTemplateReplaceContent } from "./interface";
 
 export async function New(slug: string, dst?: string) {
     const problem = await Problem.build(slug);
@@ -15,7 +17,7 @@ export async function New(slug: string, dst?: string) {
     }
 
     if (fs.existsSync(dst)) {
-        throw new Error(ErrorMsg.DestinationAlreadyExists);
+        throw new Error(`${ErrorMsg.DestinationAlreadyExists}. [dst=${dst}]`);
     }
 
     fs.mkdirSync(dst, { recursive: true });
@@ -25,8 +27,49 @@ export async function New(slug: string, dst?: string) {
 
 export async function Pull(slug: string, dst: string) {
     const problem = await Problem.build(slug);
-
     await getStatement(problem, dst);
+}
+
+export async function Code(
+    slug: string,
+    langSlug: LangSlug,
+    template: string,
+    dst: string
+) {
+    const problem = await Problem.build(slug);
+
+    for (const codeSnippet of problem.codeSnippets ?? []) {
+        if (codeSnippet.langSlug === LangSlug[langSlug]) {
+            if (fs.existsSync(dst)) {
+                throw new Error(
+                    `${ErrorMsg.DestinationAlreadyExists}. [dst=${dst}]`
+                );
+            }
+
+            fs.writeFileSync(
+                dst,
+                template.replace(
+                    CodeTemplateReplaceContent(langSlug),
+                    codeSnippet.code
+                )
+            );
+
+            Log.Info(`generate code successfully. [dst=${dst}]`);
+            return;
+        }
+    }
+
+    throw new Error(
+        `${ErrorMsg.UnsupportedLangslugType}. [langSlug=${langSlug}]`
+    );
+}
+
+export async function Submit(slug: string, langSlug: LangSlug, code: string) {
+    const problem = await Problem.build(slug);
+    await problem.submit(langSlug, code);
+    Log.Info(
+        `submit successfully. [slug=${slug}, langSlug=${langSlug}, code=${code}]`
+    );
 }
 
 async function getStatement(problem: Problem, dst: string) {
@@ -46,6 +89,10 @@ async function getStatement(problem: Problem, dst: string) {
 
     for (const k in statementPath) {
         if (fs.existsSync(statementPath[k])) {
+            Log.Warn(
+                `${ErrorMsg.DestinationAlreadyExists}, will be removed. [dst=${statementPath[k]}`
+            );
+
             fs.rmSync(statementPath[k]);
         }
     }
@@ -63,6 +110,10 @@ async function getStatement(problem: Problem, dst: string) {
                 problem.title as string
             ) + problem.content
         );
+
+        Log.Info(
+            `pull statement successfully. [path=${statementPath["en_US"]}]`
+        );
     }
 
     if (problem.translatedContent) {
@@ -73,6 +124,10 @@ async function getStatement(problem: Problem, dst: string) {
                 problem.slug as string,
                 problem.translatedTitle as string
             ) + problem.translatedContent
+        );
+
+        Log.Info(
+            `pull statement successfully. [path=${statementPath["zh_CN"]}]`
         );
     }
 }

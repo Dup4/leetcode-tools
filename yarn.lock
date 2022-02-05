@@ -351,6 +351,14 @@ caseless@~0.12.0:
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
   integrity sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
 
+chalk@4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/chalk/-/chalk-4.1.0.tgz#4e14870a618d9e2edd97dd8345fd9d9dc315646a"
+  integrity sha512-qwx12AxXe2Q5xQ43Ac//I6v5aXTipYrSESdOgzrN+9XjgEpyjpKuvSGaN4qE93f7TQTlerQQ8S+EQ0EyDoVL1A==
+  dependencies:
+    ansi-styles "^4.1.0"
+    supports-color "^7.1.0"
+
 chalk@^4.0.0, chalk@^4.1.0:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-4.1.2.tgz#aac4e2b7734a740867aeb16bf02aad556a1e7a01"
@@ -1069,10 +1077,10 @@ kind-of@^6.0.2:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
-leetcode-api-typescript@^1.8.4:
-  version "1.8.4"
-  resolved "https://registry.yarnpkg.com/leetcode-api-typescript/-/leetcode-api-typescript-1.8.4.tgz#390288d67e3e1b3ad6e2c9feb7cb85bd349e5d12"
-  integrity sha512-pwqQStWHc5ZDlrUdL/p22s90grVpImyqar14WwsZ8dDi70rsZaMzXRjGPSaFodogyKgWuF91+GViiose6y3+XQ==
+leetcode-api-typescript@^1.8.5:
+  version "1.8.5"
+  resolved "https://registry.yarnpkg.com/leetcode-api-typescript/-/leetcode-api-typescript-1.8.5.tgz#de29373b27d9aa2ab0faf6eda57f7eedb50bc503"
+  integrity sha512-4Ptd2UctNEXWyOgJEMl2hbMuyzqaO/BKsrdxKISdn9nBa9zxadK3EiLRx6k22njiAqL3ZssrC5jTcCLZ/1Fuzw==
   dependencies:
     dotenv "^16.0.0"
     graphql "^16.3.0"

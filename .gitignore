@@ -5,3 +5,5 @@ node_modules/
 dist/
 output/
 .env
+
+yarn-error.log
