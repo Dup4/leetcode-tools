@@ -23,12 +23,12 @@ export async function New(slug: string, dst?: string) {
 
     fs.mkdirSync(dst, { recursive: true });
 
-    await getStatement(problem, dst);
+    await DownloadStatement(problem, dst);
 }
 
 export async function Pull(slug: string, dst: string) {
     const problem = await Problem.build(slug);
-    await getStatement(problem, dst);
+    await DownloadStatement(problem, dst);
 }
 
 export async function Code(
@@ -90,7 +90,7 @@ timestamp: ${submission.timestamp}
 submissionUrl: ${submission.getSubmissionUrl()}`);
 }
 
-async function getStatement(problem: Problem, dst: string) {
+export async function DownloadStatement(problem: Problem, dst: string) {
     const statement: Record<string, string> = {
         en_US: "statement.en_US.md",
         zh_CN: "statement.zh_CN.md",
