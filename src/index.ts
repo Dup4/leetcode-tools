@@ -246,8 +246,12 @@ async function addMkdocsProgram(program: Command) {
                 }
 
                 {
-                    const problemSrcPath = path.join(leetcodeSrc, "problems");
-                    const problemDstPath = path.join(dst, "problems");
+                    const docsRelativePath = "problems";
+                    const problemSrcPath = path.join(
+                        leetcodeSrc,
+                        docsRelativePath
+                    );
+                    const problemDstPath = path.join(dst, docsRelativePath);
 
                     shell.cp("-R", problemSrcPath, problemDstPath);
 
@@ -255,7 +259,7 @@ async function addMkdocsProgram(program: Command) {
                         Problems: await Mkdocs.Build(
                             problemSrcPath,
                             problemDstPath,
-                            "problem"
+                            docsRelativePath
                         ),
                     });
                 }

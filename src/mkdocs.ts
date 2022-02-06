@@ -38,10 +38,11 @@ async function buildProblem(src: string, dst: string, filename: string) {
 
 ## Statement
 
-??? question "English Statement"
+??? question "English"
     --8<-- "${src}/statement.en_US.md"
 
---8<-- "${src}/statement.zh_CN.md"
+??? question "简体中文"
+    --8<-- "${src}/statement.zh_CN.md"
 
 ## Solution
 
