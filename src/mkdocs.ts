@@ -1,6 +1,9 @@
 import fs from "fs";
 import path from "path";
 import shell from "shelljs";
+import * as Constant from "./constant";
+import { Locale } from "./interface";
+import Html2Md from "./html-to-markdown";
 
 export async function Build(
     src: string,
@@ -33,25 +36,60 @@ export async function Build(
     return navList;
 }
 
-async function buildProblem(src: string, dst: string, filename: string) {
+function buildProblem(src: string, dst: string, filename: string): void {
     const mdTemplate = `# ${filename}
 
+${makeStatementContent(src, dst)}
+
+${makeSolutionContent(src, dst)}
+
+`;
+
+    fs.writeFileSync(path.join(dst, "index.md"), mdTemplate);
+}
+
+function makeStatementContent(src: string, dst: string): string {
+    const statementContent = (() => {
+        const getContent = (filename: string) => {
+            return Html2Md.translate(
+                fs.readFileSync(path.join(src, filename)).toString()
+            )
+                .split("\n")
+                .map((s) => "    " + s)
+                .join("\n");
+        };
+
+        const statementContent: Locale = {
+            en_US: getContent(Constant.StatementFileName.en_US),
+            zh_CN: getContent(Constant.StatementFileName.zh_CN),
+        };
+
+        return statementContent;
+    })();
+
+    shell.rm("-R", `${dst}/*.md`);
+    return `
 ## Statement
 
-??? question "English"
-    --8<-- "${src}/statement.en_US.md"
+=== "English"
+${statementContent.en_US}
 
-??? question "简体中文"
-    --8<-- "${src}/statement.zh_CN.md"
+===! "简体中文"
+${statementContent.zh_CN}
 
+`;
+}
+
+function makeSolutionContent(src: string, dst: string): string {
+    shell.rm("-R", `${dst}/*.cpp`);
+
+    return `
 ## Solution
 
 === "Cpp"
 \`\`\`cpp
---8<-- "${dst}/solution.cpp"
+--8<-- "${src}/solution.cpp"
 \`\`\`
-`;
 
-    shell.rm("-R", `${dst}/*.md`);
-    fs.writeFileSync(path.join(dst, "index.md"), mdTemplate);
+`;
 }

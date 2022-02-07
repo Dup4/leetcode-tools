@@ -1,6 +1,6 @@
 {
     "name": "leetcode-tools",
-    "version": "1.3.6",
+    "version": "1.4.0",
     "description": "A cli tool to enjoy leetcode!",
     "bin": {
         "lc": "dist/index.js"
@@ -54,6 +54,7 @@
         "dotenv": "^16.0.0",
         "js-yaml": "^4.1.0",
         "leetcode-api-typescript": "^1.8.6",
+        "node-html-markdown": "^1.1.3",
         "shelljs": "^0.8.5"
     }
 }

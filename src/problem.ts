@@ -116,7 +116,7 @@ export async function DownloadStatement(problem: Problem, dst: string) {
     }
 
     const getProblemLink = (baseUrl: string, slug: string, title: string) => {
-        return `<p><strong><a href="${baseUrl}/problems/${slug}/" target="_blank" rel="noopener noreferrer">${title}</a></strong></p>\n\n`;
+        return `<p><strong><a href="${baseUrl}problems/${slug}/" target="_blank" rel="noopener noreferrer">${title}</a></strong></p>\n\n`;
     };
 
     if (problem.content) {

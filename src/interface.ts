@@ -1,5 +1,10 @@
 import { LangSlug, LangSlugExt } from "leetcode-api-typescript";
 
+export interface Locale {
+    en_US?: any;
+    zh_CN?: any;
+}
+
 const solutionPrefix = "solution";
 
 export function CodeTemplateFileName(langSlug: LangSlug) {
