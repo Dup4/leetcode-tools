@@ -57,6 +57,7 @@ function makeStatementContent(src: string, dst: string): string {
                 .replace(/<pre>/g, "<pre><code>")
                 .replace(/<pre><code>\n/g, "<pre><code>")
                 .replace(/<\/pre>/g, "</code></pre>")
+                .replace(/\*/g, "\\*")
                 .split("\n")
                 .filter((s) => s !== "")
                 .map((s) => "    " + s)
