@@ -71,11 +71,11 @@ function makeStatementContent(src: string, dst: string): string {
     return `
 ## Statement
 
+=== "简体中文"
+${statementContent.zh_CN}
+
 === "English"
 ${statementContent.en_US}
-
-===! "简体中文"
-${statementContent.zh_CN}
 
 `;
 }
