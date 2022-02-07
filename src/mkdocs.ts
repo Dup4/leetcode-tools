@@ -58,6 +58,7 @@ function makeStatementContent(src: string, dst: string): string {
                 .replace(/<pre><code>\n/g, "<pre><code>")
                 .replace(/<\/pre>/g, "</code></pre>")
                 .split("\n")
+                .filter((s) => s !== "")
                 .map((s) => "    " + s)
                 .join("\n");
         };
