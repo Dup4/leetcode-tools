@@ -3,7 +3,6 @@ import path from "path";
 import shell from "shelljs";
 import * as Constant from "./constant";
 import { Locale } from "./interface";
-import Html2Md from "./html-to-markdown";
 
 export async function Build(
     src: string,
