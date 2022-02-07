@@ -54,8 +54,9 @@ function makeStatementContent(src: string, dst: string): string {
             return fs
                 .readFileSync(path.join(src, filename))
                 .toString()
-                .replace(/<pre>\n/g, "<pre><code>")
-                .replace(/<\/pre>\n/g, "</code></pre>")
+                .replace(/<pre>/g, "<pre><code>")
+                .replace(/<pre><code>\n/g, "<pre><code>")
+                .replace(/<\/pre>/g, "</code></pre>")
                 .split("\n")
                 .map((s) => "    " + s)
                 .join("\n");
