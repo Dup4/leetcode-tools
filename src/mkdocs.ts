@@ -51,13 +51,11 @@ ${makeSolutionContent(src, dst)}
 function makeStatementContent(src: string, dst: string): string {
     const statementContent = (() => {
         const getContent = (filename: string) => {
-            return Html2Md.translate(
-                fs
-                    .readFileSync(path.join(src, filename))
-                    .toString()
-                    .replace(/<pre>/g, "<pre><code>")
-                    .replace(/<\/pre>/g, "</code></pre>")
-            )
+            return fs
+                .readFileSync(path.join(src, filename))
+                .toString()
+                .replace(/<pre>/g, "<pre><code>")
+                .replace(/<\/pre>/g, "</code></pre>")
                 .split("\n")
                 .map((s) => "    " + s)
                 .join("\n");
