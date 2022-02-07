@@ -59,7 +59,8 @@ function makeStatementContent(src: string, dst: string): string {
                 .replace(/<\/pre>/g, "</code></pre>")
                 .split("\n")
                 .filter((s) => s !== "")
-                .join("");
+                .map((s) => "    " + s)
+                .join("\n");
         };
 
         const statementContent: Locale = {
@@ -75,10 +76,10 @@ function makeStatementContent(src: string, dst: string): string {
 ## Statement
 
 === "简体中文"
-    ${statementContent.zh_CN}
+${statementContent.zh_CN}
 
 === "English"
-    ${statementContent.en_US}
+${statementContent.en_US}
 
 `;
 }
