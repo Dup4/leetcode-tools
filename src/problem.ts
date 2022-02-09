@@ -1,9 +1,15 @@
-import { Problem, LangSlug } from "leetcode-api-typescript";
+import {
+    Problem,
+    LangSlug,
+    ProblemDifficulty,
+    TopicTag,
+    Config,
+} from "leetcode-api-typescript";
 import * as fs from "fs";
 import * as path from "path";
 import * as ErrorMsg from "./errorMsg";
 import Log from "./log";
-import { CodeTemplateReplaceContent } from "./interface";
+import { CodeTemplateReplaceContent, LocaleEnum } from "./interface";
 import { Sleep } from "./utils";
 
 export async function New(slug: string, dst: string) {
@@ -28,16 +34,17 @@ export async function Pull(slug: string, dst: string) {
 }
 
 export async function DownloadProblem(problem: Problem, dst: string) {
-    const problemPath = path.join(dst, "problem");
-    if (fs.existsSync(problemPath)) {
+    const problemAssetsPath = path.join(dst, "problem-assets");
+
+    if (fs.existsSync(problemAssetsPath)) {
         Log.Warn(
-            `${ErrorMsg.DestinationAlreadyExists}, will be removed. [dst=${problemPath}]`
+            `${ErrorMsg.DestinationAlreadyExists}, will be removed. [dst=${problemAssetsPath}]`
         );
 
-        fs.rmSync(problemPath, { recursive: true });
+        fs.rmSync(problemAssetsPath, { recursive: true });
     }
 
-    fs.mkdirSync(problemPath, { recursive: true });
+    fs.mkdirSync(problemAssetsPath, { recursive: true });
 
     const problemContent = JSON.parse(JSON.stringify(problem));
     const contentImages = await problem.getContentImages();
@@ -48,10 +55,10 @@ export async function DownloadProblem(problem: Problem, dst: string) {
 
             content = content.replace(
                 key,
-                path.join("./", "problem", replaceKey)
+                path.join("./", "problem-assets", replaceKey)
             );
 
-            const downloadPath = path.join(problemPath, replaceKey);
+            const downloadPath = path.join(problemAssetsPath, replaceKey);
             fs.writeFileSync(downloadPath, mp.get(key) as string, "binary");
 
             Log.Info(
@@ -76,11 +83,121 @@ export async function DownloadProblem(problem: Problem, dst: string) {
         );
     }
 
-    const problemJsonPath = path.join(problemPath, "problem.json");
-
+    const problemJsonPath = path.join(problemAssetsPath, "problem.json");
     fs.writeFileSync(problemJsonPath, JSON.stringify(problemContent), "utf-8");
-
     Log.Info(`download problem.json successfully. [path=${problemJsonPath}]`);
+
+    await (async () => {
+        const statement: Record<string, string> = {
+            en_US: "statement.en_US.md",
+            zh_CN: "statement.zh_CN.md",
+        };
+
+        const statementPath = (() => {
+            const statementPath: Record<string, string> = {};
+            for (const k in statement) {
+                statementPath[k] = path.join(dst, statement[k]);
+            }
+
+            return statementPath;
+        })();
+
+        for (const k in statementPath) {
+            if (fs.existsSync(statementPath[k])) {
+                Log.Warn(
+                    `${ErrorMsg.DestinationAlreadyExists}, will be removed. [dst=${statementPath[k]}`
+                );
+
+                fs.rmSync(statementPath[k]);
+            }
+        }
+
+        const getProblemLink = (localeEnum?: LocaleEnum) => {
+            const getBase = () => {
+                switch (localeEnum) {
+                    case LocaleEnum.en_US:
+                        return Config.uri.us.base;
+                    case LocaleEnum.zh_CN:
+                        return Config.uri.cn.base;
+                }
+            };
+
+            const getTitle = () => {
+                switch (localeEnum) {
+                    case LocaleEnum.en_US:
+                        return problemContent.title;
+                    case LocaleEnum.zh_CN:
+                        return problemContent.translatedTitle;
+                }
+            };
+
+            return `- Link: <p><strong><a href="${getBase()}problems/${
+                problemContent.slug
+            }/" target="_blank" rel="noopener noreferrer">${getTitle()}</a></strong></p>`;
+        };
+
+        const getProblemDifficulty = () => {
+            return `- Difficulty: ${
+                ProblemDifficulty[problemContent.difficulty]
+            }`;
+        };
+
+        const getProblemTag = (localeEnum?: LocaleEnum) => {
+            const getTag = (t: TopicTag) => {
+                switch (localeEnum) {
+                    case LocaleEnum.en_US:
+                        return t.name;
+                    case LocaleEnum.zh_CN:
+                        return t.translatedName;
+                }
+            };
+
+            return `- Tag: ${problemContent.tag
+                .map((t: TopicTag) => `\`${getTag(t)}\``)
+                .join(" ")}`;
+        };
+
+        const getStatement = (localeEnum?: LocaleEnum) => {
+            const getContent = () => {
+                switch (localeEnum) {
+                    case LocaleEnum.en_US:
+                        return problemContent.content;
+                    case LocaleEnum.zh_CN:
+                        return problemContent.translatedContent;
+                }
+            };
+
+            return `
+??? info "Metadata"
+    ${getProblemLink(localeEnum)}
+    ${getProblemDifficulty()}
+    ${getProblemTag(localeEnum)}
+
+${getContent()}`;
+        };
+
+        if (problemContent.content) {
+            fs.writeFileSync(
+                statementPath["en_US"],
+                getStatement(LocaleEnum.en_US)
+            );
+
+            Log.Info(
+                `pull statement successfully. [path=${statementPath["en_US"]}]`
+            );
+        }
+
+        if (problemContent.translatedContent) {
+            fs.writeFileSync(
+                statementPath["zh_CN"],
+                getStatement(LocaleEnum.zh_CN)
+            );
+
+            Log.Info(
+                `pull statement successfully. [path=${statementPath["zh_CN"]}]`
+            );
+        }
+    })();
 }
 
 export async function Code(

@@ -1,5 +1,10 @@
 import { LangSlug, LangSlugExt } from "leetcode-api-typescript";
 
+export enum LocaleEnum {
+    en_US,
+    zh_CN,
+}
+
 export interface Locale {
     en_US?: any;
     zh_CN?: any;
