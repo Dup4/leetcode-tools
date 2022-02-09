@@ -6,16 +6,12 @@ import Log from "./log";
 import { CodeTemplateReplaceContent } from "./interface";
 import { Sleep } from "./utils";
 
-export async function New(slug: string, dst?: string) {
+export async function New(slug: string, dst: string) {
     const problem = await Problem.build(slug);
 
     const targetDirName = `${problem.id}.${problem.slug}`;
 
-    if (dst) {
-        dst = path.join(dst, targetDirName);
-    } else {
-        dst = path.join(process.env.INIT_CWD ?? "", targetDirName);
-    }
+    dst = path.join(dst, targetDirName);
 
     if (fs.existsSync(dst)) {
         throw new Error(`${ErrorMsg.DestinationAlreadyExists}. [dst=${dst}]`);
@@ -29,65 +25,6 @@ export async function New(slug: string, dst?: string) {
 export async function Pull(slug: string, dst: string) {
     const problem = await Problem.build(slug);
     await DownloadStatement(problem, dst);
-}
-
-export async function Code(
-    slug: string,
-    langSlug: LangSlug,
-    template: string,
-    dst: string
-) {
-    const problem = await Problem.build(slug);
-
-    for (const codeSnippet of problem.codeSnippets ?? []) {
-        if (codeSnippet.langSlug === LangSlug[langSlug]) {
-            if (fs.existsSync(dst)) {
-                throw new Error(
-                    `${ErrorMsg.DestinationAlreadyExists}. [dst=${dst}]`
-                );
-            }
-
-            fs.writeFileSync(
-                dst,
-                template.replace(
-                    CodeTemplateReplaceContent(langSlug),
-                    codeSnippet.code
-                )
-            );
-
-            Log.Info(`generate code successfully. [dst=${dst}]`);
-            return;
-        }
-    }
-
-    throw new Error(
-        `${ErrorMsg.UnsupportedLangslugType}. [langSlug=${langSlug}]`
-    );
-}
-
-export async function Submit(slug: string, langSlug: LangSlug, code: string) {
-    const problem = await Problem.build(slug);
-    const submission = await problem.submit(langSlug, code);
-
-    Log.Info(
-        `submit successfully. [slug=${slug}, langSlug=${LangSlug[langSlug]}]`
-    );
-
-    for (let i = 0; i < 3; i++) {
-        await submission.detail();
-        if (submission.statusDisplay === "") {
-            Sleep(500);
-            continue;
-        }
-    }
-
-    Log.Info(`id: ${submission.id}
-lang: ${submission.lang}
-runtime: ${submission.runtime}
-memory: ${submission.memory}
-status: ${submission.statusDisplay}
-timestamp: ${submission.timestamp}
-submissionUrl: ${submission.getSubmissionUrl()}`);
 }
 
 export async function DownloadStatement(problem: Problem, dst: string) {
@@ -148,4 +85,63 @@ export async function DownloadStatement(problem: Problem, dst: string) {
             `pull statement successfully. [path=${statementPath["zh_CN"]}]`
         );
     }
+}
+
+export async function Code(
+    slug: string,
+    langSlug: LangSlug,
+    template: string,
+    dst: string
+) {
+    const problem = await Problem.build(slug);
+
+    for (const codeSnippet of problem.codeSnippets ?? []) {
+        if (codeSnippet.langSlug === LangSlug[langSlug]) {
+            if (fs.existsSync(dst)) {
+                throw new Error(
+                    `${ErrorMsg.DestinationAlreadyExists}. [dst=${dst}]`
+                );
+            }
+
+            fs.writeFileSync(
+                dst,
+                template.replace(
+                    CodeTemplateReplaceContent(langSlug),
+                    codeSnippet.code
+                )
+            );
+
+            Log.Info(`generate code successfully. [dst=${dst}]`);
+            return;
+        }
+    }
+
+    throw new Error(
+        `${ErrorMsg.UnsupportedLangslugType}. [langSlug=${langSlug}]`
+    );
+}
+
+export async function Submit(slug: string, langSlug: LangSlug, code: string) {
+    const problem = await Problem.build(slug);
+    const submission = await problem.submit(langSlug, code);
+
+    Log.Info(
+        `submit successfully. [slug=${slug}, langSlug=${LangSlug[langSlug]}]`
+    );
+
+    for (let i = 0; i < 3; i++) {
+        await submission.detail();
+        if (submission.statusDisplay === "") {
+            Sleep(500);
+            continue;
+        }
+    }
+
+    Log.Info(`id: ${submission.id}
+lang: ${submission.lang}
+runtime: ${submission.runtime}
+memory: ${submission.memory}
+status: ${submission.statusDisplay}
+timestamp: ${submission.timestamp}
+submissionUrl: ${submission.getSubmissionUrl()}`);
 }

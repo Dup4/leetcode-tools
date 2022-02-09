@@ -54,17 +54,9 @@ async function addProblemProgram(program: Command) {
         const pullAction = async () => {
             const options = pullCommand.opts();
 
-            let { slug, dst } = options;
+            const { slug, dst } = options;
 
             try {
-                if (!slug) {
-                    slug = getDefaultProblemSlug();
-                }
-
-                if (!dst) {
-                    dst = getDefaultDst();
-                }
-
                 await Problem.Pull(slug, dst);
             } catch (err) {
                 Log.Error(err);
@@ -73,21 +65,14 @@ async function addProblemProgram(program: Command) {
 
         const codeAction = async () => {
             const options = codeCommand.opts();
-            let { slug, dst, langSlug, fileName } = options;
+            const { slug, dst } = options;
+            let { langSlug, fileName } = options;
 
             try {
                 if (!process.env.LEETCODE_TEMPLATE_PATH) {
                     throw new Error(
                         `${ErrorMsg.EnvironmentVariableDoesNotExist} [envName=LEETCODE_TEMPLATE_PATH]`
                     );
-                }
-
-                if (!slug) {
-                    slug = getDefaultProblemSlug();
-                }
-
-                if (!dst) {
-                    dst = getDefaultDst();
                 }
 
                 if (!langSlug) {
@@ -121,17 +106,10 @@ async function addProblemProgram(program: Command) {
 
         const submitAction = async () => {
             const options = submitCommand.opts();
-            let { slug, dst, langSlug, fileName } = options;
+            const { slug, dst } = options;
+            let { langSlug, fileName } = options;
 
             try {
-                if (!slug) {
-                    slug = getDefaultProblemSlug();
-                }
-
-                if (!dst) {
-                    dst = getDefaultDst();
-                }
-
                 if (!langSlug) {
                     langSlug = getDefaultLangSlug();
                 } else {
@@ -151,23 +129,25 @@ async function addProblemProgram(program: Command) {
             }
         };
 
-        newCommand.option("-d, --dst <string>").action(newAction);
+        newCommand
+            .option("-d, --dst <string>", "", getDefaultDst())
+            .action(newAction);
 
         pullCommand
-            .option("-s --slug <string>")
-            .option("-d, --dst <string>")
+            .option("-s --slug <string>", "", getDefaultProblemSlug())
+            .option("-d, --dst <string>", "", getDefaultDst())
             .action(pullAction);
 
         codeCommand
-            .option("-s --slug <string>")
-            .option("-d --dst <string>")
+            .option("-s --slug <string>", "", getDefaultProblemSlug())
+            .option("-d --dst <string>", "", getDefaultDst())
             .option("--langSlug <string>")
             .option("--fileName <string>")
             .action(codeAction);
 
         submitCommand
-            .option("-s --slug <string>")
-            .option("-d --dst <string>")
+            .option("-s --slug <string>", "", getDefaultProblemSlug())
+            .option("-d --dst <string>", "", getDefaultDst())
             .option("--langSlug <string>")
             .option("--fileName <string>")
             .action(submitAction);
