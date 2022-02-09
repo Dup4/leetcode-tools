@@ -71,7 +71,9 @@ function makeStatementContent(src: string, dst: string): string {
         return statementContent;
     })();
 
+    shell.rm("-R", `${dst}/problem-assets/problem.json`);
     shell.rm("-R", `${dst}/*.md`);
+
     return `
 ## Statement
 
