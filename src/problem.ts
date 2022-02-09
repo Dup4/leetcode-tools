@@ -1,4 +1,4 @@
-import { Problem, Config, LangSlug } from "leetcode-api-typescript";
+import { Problem, LangSlug } from "leetcode-api-typescript";
 import * as fs from "fs";
 import * as path from "path";
 import * as ErrorMsg from "./errorMsg";
@@ -28,63 +28,59 @@ export async function Pull(slug: string, dst: string) {
 }
 
 export async function DownloadProblem(problem: Problem, dst: string) {
-    const statement: Record<string, string> = {
-        en_US: "statement.en_US.md",
-        zh_CN: "statement.zh_CN.md",
-    };
+    const problemPath = path.join(dst, "problem");
+    if (fs.existsSync(problemPath)) {
+        Log.Warn(
+            `${ErrorMsg.DestinationAlreadyExists}, will be removed. [dst=${problemPath}]`
+        );
 
-    const statementPath = (() => {
-        const statementPath: Record<string, string> = {};
-        for (const k in statement) {
-            statementPath[k] = path.join(dst, statement[k]);
-        }
+        fs.rmSync(problemPath, { recursive: true });
+    }
 
-        return statementPath;
-    })();
+    fs.mkdirSync(problemPath, { recursive: true });
 
-    for (const k in statementPath) {
-        if (fs.existsSync(statementPath[k])) {
-            Log.Warn(
-                `${ErrorMsg.DestinationAlreadyExists}, will be removed. [dst=${statementPath[k]}`
+    const problemContent = JSON.parse(JSON.stringify(problem));
+    const contentImages = await problem.getContentImages();
+
+    const downloadImages = (mp: Map<string, string>, content: string) => {
+        for (const key of mp.keys()) {
+            const replaceKey = key.replace(/\//g, "-");
+
+            content = content.replace(
+                key,
+                path.join("./", "problem", replaceKey)
             );
 
-            fs.rmSync(statementPath[k]);
-        }
-    }
+            const downloadPath = path.join(problemPath, replaceKey);
+            fs.writeFileSync(downloadPath, mp.get(key) as string, "binary");
 
-    const getProblemLink = (baseUrl: string, slug: string, title: string) => {
-        return `<p><strong><a href="${baseUrl}problems/${slug}/" target="_blank" rel="noopener noreferrer">${title}</a></strong></p>\n\n`;
+            Log.Info(
+                `download image successfully. [url=${key}, downloadPath=${downloadPath}]`
+            );
+        }
+
+        return content;
     };
 
-    if (problem.content) {
-        fs.writeFileSync(
-            statementPath["en_US"],
-            getProblemLink(
-                Config.uri.us.base,
-                problem.slug as string,
-                problem.title as string
-            ) + problem.content
-        );
-
-        Log.Info(
-            `pull statement successfully. [path=${statementPath["en_US"]}]`
+    if (contentImages.content) {
+        problemContent.content = downloadImages(
+            contentImages.content,
+            problemContent.content
         );
     }
 
-    if (problem.translatedContent) {
-        fs.writeFileSync(
-            statementPath["zh_CN"],
-            getProblemLink(
-                Config.uri.cn.base,
-                problem.slug as string,
-                problem.translatedTitle as string
-            ) + problem.translatedContent
-        );
-
-        Log.Info(
-            `pull statement successfully. [path=${statementPath["zh_CN"]}]`
+    if (contentImages.translatedContent) {
+        problemContent.translatedContent = downloadImages(
+            contentImages.translatedContent,
+            problemContent.translatedContent
         );
     }
+
+    const problemJsonPath = path.join(problemPath, "problem.json");
+
+    fs.writeFileSync(problemJsonPath, JSON.stringify(problemContent), "utf-8");
+
+    Log.Info(`download problem.json successfully. [path=${problemJsonPath}]`);
 }
 
 export async function Code(
