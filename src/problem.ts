@@ -131,9 +131,9 @@ export async function DownloadProblem(problem: Problem, dst: string) {
                 }
             };
 
-            return `- Link: <p><strong><a href="${getBase()}problems/${
+            return `- Link: [${getTitle()}](${getBase()}problems/${
                 problemContent.slug
-            }/" target="_blank" rel="noopener noreferrer">${getTitle()}</a></strong></p>`;
+            })`;
         };
 
         const getProblemDifficulty = () => {
