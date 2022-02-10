@@ -1,3 +1,5 @@
+import { LangSlugExt } from "leetcode-api-typescript";
+import { LangSlug } from "leetcode-api-typescript";
 import fs from "fs";
 import path from "path";
 import shell from "shelljs";
@@ -113,6 +115,10 @@ function makeStatementContent(
 ): string {
     const statementContent = (() => {
         const getContent = (filename: string) => {
+            if (!fs.existsSync(path.join(src, filename))) {
+                return null;
+            }
+
             return fs
                 .readFileSync(path.join(src, filename))
                 .toString()
@@ -126,7 +132,7 @@ function makeStatementContent(
                 .join("\n");
         };
 
-        const statementContent: Locale<string> = {
+        const statementContent: Locale<string | null> = {
             en_US: getContent(Constant.StatementFileName.en_US as string),
             zh_CN: getContent(Constant.StatementFileName.zh_CN as string),
         };
@@ -137,14 +143,30 @@ function makeStatementContent(
     shell.rm("-R", `${dst}/problem-assets/problem.json`);
     shell.rm("-R", `${dst}/*.md`);
 
+    const statementContentList: Array<string> = [];
+
+    if (statementContent.zh_CN) {
+        statementContentList.push(`
+=== "简体中文"
+${statementContent.zh_CN}
+`);
+    }
+
+    if (statementContent.en_US) {
+        statementContentList.push(`
+=== "English"
+${statementContent.en_US}
+`);
+    }
+
+    if (statementContentList.length === 0) {
+        return "";
+    }
+
     return `
 ${"#".repeat(tocBase)} Statement
 
-=== "简体中文"
-${statementContent.zh_CN}
-
-=== "English"
-${statementContent.en_US}
+${statementContentList.join("\n")}
 
 `;
 }
@@ -154,15 +176,76 @@ function makeSolutionContent(
     dst: string,
     tocBase: number
 ): string {
-    shell.rm("-R", `${dst}/*.cpp`);
+    const tutorialName = "tutorial";
+    const solutionName = "solution";
 
-    return `
-${"#".repeat(tocBase)} Solution
+    const getIdx = (ix: number) => {
+        if (ix === 0) {
+            return "";
+        }
 
-=== "Cpp"
-\`\`\`cpp
---8<-- "${src}/solution.cpp"
+        return ix.toString();
+    };
+
+    const solutionContentList = (() => {
+        const solutionContentList: Array<string> = [];
+
+        for (let i = 0; ; i++) {
+            let content = "";
+
+            const tutorialFileName = `${tutorialName}${getIdx(i)}.md`;
+
+            if (fs.existsSync(path.join(src, tutorialFileName))) {
+                content += `
+${"#".repeat(tocBase)} Tutorial${getIdx(i)}
+
+--8<-- "${src}/${tutorialFileName}"
+
+                `;
+
+                fs.rmSync(path.join(dst, tutorialFileName));
+            }
+
+            let solutionContent = "";
+
+            for (const slug of Object.values(LangSlug)) {
+                const ext = LangSlugExt(slug as LangSlug);
+
+                const solutionFileName = `${solutionName}${getIdx(i)}.${ext}`;
+
+                if (fs.existsSync(path.join(src, solutionFileName))) {
+                    solutionContent += `
+=== "${LangSlug[slug as LangSlug]}"
+\`\`\`${ext}
+--8<-- "${src}/${solutionFileName}"
 \`\`\`
+                    `;
 
-`;
+                    fs.rmSync(path.join(dst, solutionFileName));
+                }
+            }
+
+            if (solutionContent.length !== 0) {
+                content += `
+${"#".repeat(tocBase)} Solution${getIdx(i)}
+
+${solutionContent}
+                `;
+            }
+
+            if (content === "") {
+                break;
+            }
+
+            solutionContentList.push(content);
+        }
+
+        return solutionContentList;
+    })();
+
+    if (solutionContentList.length === 0) {
+        return "";
+    }
+
+    return solutionContentList.join("\n");
 }
