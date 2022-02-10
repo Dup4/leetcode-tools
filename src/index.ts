@@ -307,9 +307,9 @@ function addMkdocsProgram(program: Command) {
                     });
                 };
 
-                buildContent("problems");
-                buildContent("weekly-contest");
-                buildContent("biweekly-contest");
+                await buildContent("problems");
+                await buildContent("weekly-contest");
+                await buildContent("biweekly-contest");
 
                 const navYamlString = Yaml.dump(navObject);
                 fs.appendFileSync(configDstFile, "\n" + navYamlString);
