@@ -57,8 +57,8 @@ export async function BuildContest(
         const _a = Number(a);
         const _b = Number(b);
 
-        if (_a < _b) return -1;
-        if (_a > _b) return 1;
+        if (_a < _b) return 1;
+        if (_a > _b) return -1;
 
         return 0;
     });
