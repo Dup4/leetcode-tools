@@ -14,6 +14,7 @@ import { LangSlug } from "leetcode-api-typescript";
 import fs from "fs";
 import shell from "shelljs";
 import Yaml from "js-yaml";
+import { MkdocsTabTitle } from "./constant";
 
 function addProblemProgram(program: Command) {
     const getDefaultProblemSlug = () => {
@@ -287,8 +288,8 @@ function addMkdocsProgram(program: Command) {
                     navObject = { nav: [] };
                 }
 
-                {
-                    const docsRelativePath = "problems";
+                const buildContent = async (name: string) => {
+                    const docsRelativePath = name;
                     const problemSrcPath = path.join(
                         leetcodeSrc,
                         docsRelativePath
@@ -298,13 +299,17 @@ function addMkdocsProgram(program: Command) {
                     shell.cp("-R", problemSrcPath, problemDstPath);
 
                     navObject.nav.push({
-                        Problems: await Mkdocs.Build(
+                        [MkdocsTabTitle[name]]: await Mkdocs.Build(name)(
                             problemSrcPath,
                             problemDstPath,
                             docsRelativePath
                         ),
                     });
-                }
+                };
+
+                buildContent("problems");
+                buildContent("weekly-contest");
+                buildContent("biweekly-contest");
 
                 const navYamlString = Yaml.dump(navObject);
                 fs.appendFileSync(configDstFile, "\n" + navYamlString);
