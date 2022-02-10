@@ -1,3 +1,4 @@
+import { StatementFileName } from "./constant";
 import {
     Problem,
     LangSlug,
@@ -9,7 +10,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as ErrorMsg from "./errorMsg";
 import Log from "./log";
-import { CodeTemplateReplaceContent, LocaleEnum } from "./interface";
+import { CodeTemplateReplaceContent, Locale, LocaleEnum } from "./interface";
 import { Sleep } from "./utils";
 
 export async function New(slug: string, dst: string) {
@@ -34,7 +35,8 @@ export async function Pull(slug: string, dst: string) {
 }
 
 export async function DownloadProblem(problem: Problem, dst: string) {
-    const problemAssetsPath = path.join(dst, "problem-assets");
+    const problemAssetsName = "problem-assets";
+    const problemAssetsPath = path.join(dst, problemAssetsName);
 
     if (fs.existsSync(problemAssetsPath)) {
         Log.Warn(
@@ -55,7 +57,7 @@ export async function DownloadProblem(problem: Problem, dst: string) {
 
             content = content.replace(
                 key,
-                path.join("./", "problem-assets", replaceKey)
+                path.join(problemAssetsName, replaceKey)
             );
 
             const downloadPath = path.join(problemAssetsPath, replaceKey);
@@ -88,29 +90,36 @@ export async function DownloadProblem(problem: Problem, dst: string) {
     Log.Info(`download problem.json successfully. [path=${problemJsonPath}]`);
 
     await (async () => {
-        const statement: Record<string, string> = {
-            en_US: "statement.en_US.md",
-            zh_CN: "statement.zh_CN.md",
-        };
-
         const statementPath = (() => {
-            const statementPath: Record<string, string> = {};
-            for (const k in statement) {
-                statementPath[k] = path.join(dst, statement[k]);
+            const statementPath: Locale<string> = {};
+
+            let key: keyof Locale<string>;
+            for (key in StatementFileName) {
+                statementPath[key] = path.join(
+                    dst,
+                    StatementFileName[key] as string
+                );
             }
 
             return statementPath;
         })();
 
-        for (const k in statementPath) {
-            if (fs.existsSync(statementPath[k])) {
-                Log.Warn(
-                    `${ErrorMsg.DestinationAlreadyExists}, will be removed. [dst=${statementPath[k]}`
-                );
+        (() => {
+            let key: keyof Locale<string>;
+            for (key in statementPath) {
+                if (!statementPath[key]) {
+                    continue;
+                }
 
-                fs.rmSync(statementPath[k]);
+                if (fs.existsSync(statementPath[key] as string)) {
+                    Log.Warn(
+                        `${ErrorMsg.DestinationAlreadyExists}, will be removed. [dst=${statementPath[key]}`
+                    );
+
+                    fs.rmSync(statementPath[key] as string);
+                }
             }
-        }
+        })();
 
         const getProblemLink = (localeEnum?: LocaleEnum) => {
             const getBase = () => {
@@ -178,7 +187,7 @@ ${getContent()}`;
 
         if (problemContent.content) {
             fs.writeFileSync(
-                statementPath["en_US"],
+                statementPath.en_US as string,
                 getStatement(LocaleEnum.en_US)
             );
 
@@ -189,7 +198,7 @@ ${getContent()}`;
 
         if (problemContent.translatedContent) {
             fs.writeFileSync(
-                statementPath["zh_CN"],
+                statementPath.zh_CN as string,
                 getStatement(LocaleEnum.zh_CN)
             );
 

@@ -5,9 +5,9 @@ export enum LocaleEnum {
     zh_CN,
 }
 
-export interface Locale {
-    en_US?: any;
-    zh_CN?: any;
+export interface Locale<T> {
+    en_US?: T;
+    zh_CN?: T;
 }
 
 const solutionPrefix = "solution";
