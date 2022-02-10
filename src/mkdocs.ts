@@ -63,9 +63,9 @@ function makeStatementContent(src: string, dst: string): string {
                 .join("\n");
         };
 
-        const statementContent: Locale = {
-            en_US: getContent(Constant.StatementFileName.en_US),
-            zh_CN: getContent(Constant.StatementFileName.zh_CN),
+        const statementContent: Locale<string> = {
+            en_US: getContent(Constant.StatementFileName.en_US as string),
+            zh_CN: getContent(Constant.StatementFileName.zh_CN as string),
         };
 
         return statementContent;
