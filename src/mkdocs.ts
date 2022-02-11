@@ -92,7 +92,10 @@ function buildContestContent(src: string, dst: string) {
             "A".charCodeAt(0) + (dir.charCodeAt(0) - "a".charCodeAt(0))
         )}
 
-${makeContent(path.join(src, dir), path.join(dst, dir), 3)}
+${makeContent(path.join(src, dir), path.join(dst, dir), 3).replace(
+    /problem-assets/g,
+    `${dir}/${Constant.problemAssetsName}`
+)}
 
 `;
 

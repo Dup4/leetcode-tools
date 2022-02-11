@@ -1,4 +1,4 @@
-import { StatementFileName } from "./constant";
+import { problemAssetsName, StatementFileName } from "./constant";
 import {
     Problem,
     LangSlug,
@@ -35,7 +35,6 @@ export async function Pull(slug: string, dst: string) {
 }
 
 export async function DownloadProblem(problem: Problem, dst: string) {
-    const problemAssetsName = "problem-assets";
     const problemAssetsPath = path.join(dst, problemAssetsName);
 
     if (fs.existsSync(problemAssetsPath)) {
