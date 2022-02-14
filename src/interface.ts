@@ -1,4 +1,4 @@
-import { LangSlug, LangSlugExt } from "leetcode-api-typescript";
+import { LangSlug, LangExt } from "leetcode-api-typescript";
 
 export enum LocaleEnum {
     en_US = "en_US",
@@ -18,12 +18,12 @@ export interface Locale<T> {
 const solutionPrefix = "solution";
 
 export function CodeTemplateFileName(langSlug: LangSlug) {
-    return `${solutionPrefix}-${LangSlug[langSlug]}.${LangSlugExt(langSlug)}`;
+    return `${solutionPrefix}-${LangSlug[langSlug]}.${LangExt(langSlug)}`;
 }
 
 export function SolutionFileName(langSlug: LangSlug, filename?: string) {
     const prefix = filename ? filename : solutionPrefix;
-    return `${prefix}.${LangSlugExt(langSlug)}`;
+    return `${prefix}.${LangExt(langSlug)}`;
 }
 
 export function CodeTemplateReplaceContent(langSlug: LangSlug) {

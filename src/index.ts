@@ -80,7 +80,7 @@ function addProblemProgram(program: Command) {
                 if (!langSlug) {
                     langSlug = getDefaultLangSlug();
                 } else {
-                    langSlug = LangSlug[langSlug];
+                    langSlug = LangSlug[langSlug as LangSlug];
                 }
 
                 fileName = SolutionFileName(langSlug, fileName);
@@ -115,7 +115,7 @@ function addProblemProgram(program: Command) {
                 if (!langSlug) {
                     langSlug = getDefaultLangSlug();
                 } else {
-                    langSlug = LangSlug[langSlug];
+                    langSlug = LangSlug[langSlug as LangSlug];
                 }
 
                 fileName = SolutionFileName(langSlug, fileName);

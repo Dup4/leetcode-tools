@@ -151,8 +151,6 @@ function makeStatementContent(
         return statementContent;
     })();
 
-    // shell.rm("-R", `${dst}/*.md`);
-
     const statementContentList: Array<string> = [];
 
     if (statementContent.zh_CN) {
