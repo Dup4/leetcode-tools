@@ -1,9 +1,14 @@
 import { LangSlug, LangSlugExt } from "leetcode-api-typescript";
 
 export enum LocaleEnum {
-    en_US,
-    zh_CN,
+    en_US = "en_US",
+    zh_CN = "zh_CN",
 }
+
+export const LocaleText: Record<LocaleEnum, string> = {
+    [LocaleEnum.en_US]: "English",
+    [LocaleEnum.zh_CN]: "简体中文",
+};
 
 export interface Locale<T> {
     en_US?: T;

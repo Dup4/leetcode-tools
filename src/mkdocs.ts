@@ -1,10 +1,8 @@
-import { LangSlugExt } from "leetcode-api-typescript";
-import { LangSlug } from "leetcode-api-typescript";
+import { LangText, LangSlug, LangExt } from "leetcode-api-typescript";
 import fs from "fs";
 import path from "path";
-import shell from "shelljs";
 import * as Constant from "./constant";
-import { Locale } from "./interface";
+import { Locale, LocaleEnum, LocaleText } from "./interface";
 
 export function Build(name: string) {
     if (name === "problems") {
@@ -104,6 +102,16 @@ ${makeContent(path.join(src, dir), path.join(dst, dir), 3).replace(
 }
 
 function makeContent(src: string, dst: string, tocBase: number): string {
+    const problemJsonFilePath = path.join(
+        dst,
+        Constant.problemAssetsName,
+        "problem.json"
+    );
+
+    if (fs.existsSync(problemJsonFilePath)) {
+        fs.rmSync(problemJsonFilePath);
+    }
+
     return `
 ${makeStatementContent(src, dst, tocBase)}
 
@@ -143,8 +151,7 @@ function makeStatementContent(
         return statementContent;
     })();
 
-    shell.rm("-R", `${dst}/problem-assets/problem.json`);
-    shell.rm("-R", `${dst}/*.md`);
+    // shell.rm("-R", `${dst}/*.md`);
 
     const statementContentList: Array<string> = [];
 
@@ -196,47 +203,77 @@ function makeSolutionContent(
         for (let i = 0; ; i++) {
             let content = "";
 
-            const tutorialFileName = `${tutorialName}${getIdx(i)}.md`;
+            const tutorialContent: string = (() => {
+                let content = "";
 
-            if (fs.existsSync(path.join(src, tutorialFileName))) {
+                for (const locale of Object.values(LocaleEnum)) {
+                    const tutorialFileName = `${tutorialName}${getIdx(i)}.${
+                        locale as string
+                    }.md`;
+                    const tutorialFileSrcPath = path.join(
+                        src,
+                        tutorialFileName
+                    );
+                    const tutorialFileDstPath = path.join(
+                        dst,
+                        tutorialFileName
+                    );
+
+                    if (fs.existsSync(tutorialFileSrcPath)) {
+                        content += `
+=== "${LocaleText[locale as LocaleEnum]}"
+--8<-- "${tutorialFileSrcPath}"
+`;
+                        fs.rmSync(tutorialFileDstPath);
+                    }
+                }
+
+                return content;
+            })();
+
+            if (tutorialContent.length !== 0) {
                 content += `
 ${"#".repeat(tocBase)} Tutorial${getIdx(i)}
 
---8<-- "${src}/${tutorialFileName}"
-
-                `;
-
-                fs.rmSync(path.join(dst, tutorialFileName));
+${tutorialContent}
+`;
             }
 
-            let solutionContent = "";
+            const solutionContent: string = (() => {
+                let content = "";
 
-            for (const slug of Object.values(LangSlug)) {
-                const ext = LangSlugExt(slug as LangSlug);
+                for (const slug of Object.values(LangSlug)) {
+                    const langSxt = LangExt(slug as LangSlug);
+                    const solutionFileName = `${solutionName}${getIdx(
+                        i
+                    )}.${langSxt}`;
+                    const solutionSrcPath = path.join(src, solutionFileName);
+                    const solutionDstPath = path.join(dst, solutionFileName);
 
-                const solutionFileName = `${solutionName}${getIdx(i)}.${ext}`;
-
-                if (fs.existsSync(path.join(src, solutionFileName))) {
-                    solutionContent += `
-=== "${LangSlug[slug as LangSlug]}"
-\`\`\`${ext}
---8<-- "${src}/${solutionFileName}"
+                    if (fs.existsSync(solutionSrcPath)) {
+                        content += `
+=== "${LangText[slug as LangSlug]}"
+\`\`\`${langSxt}
+--8<-- "${solutionSrcPath}"
 \`\`\`
-                    `;
+`;
 
-                    fs.rmSync(path.join(dst, solutionFileName));
+                        fs.rmSync(solutionDstPath);
+                    }
                 }
-            }
+
+                return content;
+            })();
 
             if (solutionContent.length !== 0) {
                 content += `
 ${"#".repeat(tocBase)} Solution${getIdx(i)}
 
 ${solutionContent}
-                `;
+`;
             }
 
-            if (content === "") {
+            if (content.length === 0) {
                 break;
             }
 
