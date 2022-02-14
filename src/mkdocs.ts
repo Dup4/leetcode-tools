@@ -91,8 +91,8 @@ function buildContestContent(src: string, dst: string) {
         )}
 
 ${makeContent(path.join(src, dir), path.join(dst, dir), 3).replace(
-    /problem-assets/g,
-    `${dir}/${Constant.problemAssetsName}`
+    new RegExp(Constant.ProblemAssetsName, "g"),
+    `${dir}/${Constant.ProblemAssetsName}`
 )}
 
 `;
@@ -104,7 +104,7 @@ ${makeContent(path.join(src, dir), path.join(dst, dir), 3).replace(
 function makeContent(src: string, dst: string, tocBase: number): string {
     const problemJsonFilePath = path.join(
         dst,
-        Constant.problemAssetsName,
+        Constant.ProblemAssetsName,
         "problem.json"
     );
 

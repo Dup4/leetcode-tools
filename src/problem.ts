@@ -1,4 +1,4 @@
-import { problemAssetsName, StatementFileName } from "./constant";
+import * as Constant from "./constant";
 import {
     Problem,
     LangSlug,
@@ -35,7 +35,7 @@ export async function Pull(slug: string, dst: string) {
 }
 
 export async function DownloadProblem(problem: Problem, dst: string) {
-    const problemAssetsPath = path.join(dst, problemAssetsName);
+    const problemAssetsPath = path.join(dst, Constant.ProblemAssetsName);
 
     if (fs.existsSync(problemAssetsPath)) {
         Log.Warn(
@@ -56,7 +56,7 @@ export async function DownloadProblem(problem: Problem, dst: string) {
 
             content = content.replace(
                 key,
-                path.join(problemAssetsName, replaceKey)
+                path.join(Constant.ProblemAssetsName, replaceKey)
             );
 
             const downloadPath = path.join(problemAssetsPath, replaceKey);
@@ -93,10 +93,10 @@ export async function DownloadProblem(problem: Problem, dst: string) {
             const statementPath: Locale<string> = {};
 
             let key: keyof Locale<string>;
-            for (key in StatementFileName) {
+            for (key in Constant.StatementFileName) {
                 statementPath[key] = path.join(
                     dst,
-                    StatementFileName[key] as string
+                    Constant.StatementFileName[key] as string
                 );
             }
 

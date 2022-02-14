@@ -15,4 +15,4 @@ export const MkdocsTabTitle: Record<string, string> = {
     "biweekly-contest": "Biweekly Contest",
 };
 
-export const problemAssetsName = "problem-assets";
+export const ProblemAssetsName = "problem-assets";
