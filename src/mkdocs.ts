@@ -2,7 +2,7 @@ import { LangText, LangSlug, LangExt } from "leetcode-api-typescript";
 import fs from "fs";
 import path from "path";
 import * as Constant from "./constant";
-import { Locale, LocaleEnum, LocaleText } from "./interface";
+import { LocaleEnum, LocaleText } from "./interface";
 
 export function Build(name: string) {
     if (name === "problems") {
@@ -115,7 +115,7 @@ function makeContent(src: string, dst: string, tocBase: number): string {
     return `
 ${makeStatementContent(src, dst, tocBase)}
 
-${makeSolutionContent(src, dst, tocBase)}
+${makeTutorialAndSolutionContent(src, dst, tocBase)}
 `;
 }
 
@@ -124,69 +124,57 @@ function makeStatementContent(
     dst: string,
     tocBase: number
 ): string {
-    const statementContent = (() => {
-        const getContent = (filename: string) => {
-            if (!fs.existsSync(path.join(src, filename))) {
-                return null;
+    const statementContent: string = (() => {
+        let content = "";
+
+        for (const locale of Object.values(LocaleEnum)) {
+            const statementFileName = `${Constant.StatementFileNamePrefix}.${
+                locale as string
+            }.md`;
+
+            const statementSrcPath = path.join(src, statementFileName);
+            const statementDstPath = path.join(dst, statementFileName);
+
+            if (fs.existsSync(statementSrcPath)) {
+                const statementContent = fs
+                    .readFileSync(statementSrcPath)
+                    .toString()
+                    .replace(/<pre>/g, "<pre><code>")
+                    .replace(/<pre><code>\n/g, "<pre><code>")
+                    .replace(/<\/pre>/g, "</code></pre>")
+                    .replace(/\*/g, "\\*")
+                    .split("\n")
+                    .filter((s) => s !== "")
+                    .map((s) => "    " + s)
+                    .join("\n");
+
+                content += `
+=== "${LocaleText[locale as LocaleEnum]}"
+${statementContent}
+`;
+                fs.rmSync(statementDstPath);
             }
+        }
 
-            return fs
-                .readFileSync(path.join(src, filename))
-                .toString()
-                .replace(/<pre>/g, "<pre><code>")
-                .replace(/<pre><code>\n/g, "<pre><code>")
-                .replace(/<\/pre>/g, "</code></pre>")
-                .replace(/\*/g, "\\*")
-                .split("\n")
-                .filter((s) => s !== "")
-                .map((s) => "    " + s)
-                .join("\n");
-        };
-
-        const statementContent: Locale<string | null> = {
-            en_US: getContent(Constant.StatementFileName.en_US as string),
-            zh_CN: getContent(Constant.StatementFileName.zh_CN as string),
-        };
-
-        return statementContent;
+        return content;
     })();
 
-    const statementContentList: Array<string> = [];
-
-    if (statementContent.zh_CN) {
-        statementContentList.push(`
-=== "简体中文"
-${statementContent.zh_CN}
-`);
-    }
-
-    if (statementContent.en_US) {
-        statementContentList.push(`
-=== "English"
-${statementContent.en_US}
-`);
-    }
-
-    if (statementContentList.length === 0) {
+    if (statementContent.length === 0) {
         return "";
     }
 
     return `
 ${"#".repeat(tocBase)} Statement
 
-${statementContentList.join("\n")}
-
+${statementContent}
 `;
 }
 
-function makeSolutionContent(
+function makeTutorialAndSolutionContent(
     src: string,
     dst: string,
     tocBase: number
 ): string {
-    const tutorialName = "tutorial";
-    const solutionName = "solution";
-
     const getIdx = (ix: number) => {
         if (ix === 0) {
             return "";
@@ -205,9 +193,9 @@ function makeSolutionContent(
                 let content = "";
 
                 for (const locale of Object.values(LocaleEnum)) {
-                    const tutorialFileName = `${tutorialName}${getIdx(i)}.${
-                        locale as string
-                    }.md`;
+                    const tutorialFileName = `${
+                        Constant.TutorialFileNamePrefix
+                    }${getIdx(i)}.${locale as string}.md`;
                     const tutorialFileSrcPath = path.join(
                         src,
                         tutorialFileName
@@ -242,9 +230,9 @@ ${tutorialContent}
 
                 for (const slug of Object.values(LangSlug)) {
                     const langSxt = LangExt(slug as LangSlug);
-                    const solutionFileName = `${solutionName}${getIdx(
-                        i
-                    )}.${langSxt}`;
+                    const solutionFileName = `${
+                        Constant.SolutionFileNamePrefix
+                    }${getIdx(i)}.${langSxt}`;
                     const solutionSrcPath = path.join(src, solutionFileName);
                     const solutionDstPath = path.join(dst, solutionFileName);
 
