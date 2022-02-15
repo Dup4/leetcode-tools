@@ -1,19 +1,14 @@
 import { LangSlug, LangExt } from "leetcode-api-typescript";
 
 export enum LocaleEnum {
-    en_US = "en_US",
     zh_CN = "zh_CN",
+    en_US = "en_US",
 }
 
 export const LocaleText: Record<LocaleEnum, string> = {
-    [LocaleEnum.en_US]: "English",
     [LocaleEnum.zh_CN]: "简体中文",
+    [LocaleEnum.en_US]: "English",
 };
-
-export interface Locale<T> {
-    en_US?: T;
-    zh_CN?: T;
-}
 
 const StatementFileNamePrefix = "statement";
 const TutorialFileNamePrefix = "tutorial";
