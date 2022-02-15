@@ -10,7 +10,11 @@ import * as fs from "fs";
 import * as path from "path";
 import * as ErrorMsg from "./errorMsg";
 import Log from "./log";
-import { CodeTemplateReplaceContent, Locale, LocaleEnum } from "./interface";
+import {
+    CodeTemplateReplaceContent,
+    LocaleEnum,
+    StatementFileName,
+} from "./interface";
 import { Sleep } from "./utils";
 
 export async function New(slug: string, dst: string) {
@@ -89,33 +93,19 @@ export async function DownloadProblem(problem: Problem, dst: string) {
     Log.Info(`download problem.json successfully. [path=${problemJsonPath}]`);
 
     await (async () => {
-        const statementPath = (() => {
-            const statementPath: Locale<string> = {};
-
-            let key: keyof Locale<string>;
-            for (key in Constant.StatementFileName) {
-                statementPath[key] = path.join(
-                    dst,
-                    Constant.StatementFileName[key] as string
-                );
-            }
-
-            return statementPath;
-        })();
+        const StatementPath = (locale: LocaleEnum): string => {
+            return path.join(dst, StatementFileName(locale));
+        };
 
         (() => {
-            let key: keyof Locale<string>;
-            for (key in statementPath) {
-                if (!statementPath[key]) {
-                    continue;
-                }
-
-                if (fs.existsSync(statementPath[key] as string)) {
+            for (const locale in LocaleEnum) {
+                const statementPath = StatementPath(locale as LocaleEnum);
+                if (fs.existsSync(statementPath)) {
                     Log.Warn(
-                        `${ErrorMsg.DestinationAlreadyExists}, will be removed. [dst=${statementPath[key]}`
+                        `${ErrorMsg.DestinationAlreadyExists}, will be removed. [dst=${statementPath}`
                     );
 
-                    fs.rmSync(statementPath[key] as string);
+                    fs.rmSync(statementPath);
                 }
             }
         })();
@@ -185,25 +175,22 @@ ${getContent()}`;
         };
 
         if (problemContent.content) {
+            const statementPath = StatementPath(LocaleEnum.en_US);
+
             fs.writeFileSync(
-                statementPath.en_US as string,
+                StatementPath(LocaleEnum.en_US),
                 getStatement(LocaleEnum.en_US)
             );
 
-            Log.Info(
-                `pull statement successfully. [path=${statementPath["en_US"]}]`
-            );
+            Log.Info(`pull statement successfully. [path=${statementPath}]`);
         }
 
         if (problemContent.translatedContent) {
-            fs.writeFileSync(
-                statementPath.zh_CN as string,
-                getStatement(LocaleEnum.zh_CN)
-            );
+            const statementPath = StatementPath(LocaleEnum.zh_CN);
 
-            Log.Info(
-                `pull statement successfully. [path=${statementPath["zh_CN"]}]`
-            );
+            fs.writeFileSync(statementPath, getStatement(LocaleEnum.zh_CN));
+
+            Log.Info(`pull statement successfully. [path=${statementPath}]`);
         }
     })();
 }

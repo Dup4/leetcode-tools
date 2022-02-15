@@ -2,7 +2,14 @@ import { LangText, LangSlug, LangExt } from "leetcode-api-typescript";
 import fs from "fs";
 import path from "path";
 import * as Constant from "./constant";
-import { LocaleEnum, LocaleText } from "./interface";
+import {
+    LocaleEnum,
+    LocaleText,
+    SolutionFileName,
+    StatementFileName,
+    TutorialFileName,
+} from "./interface";
+import { GetIdx } from "./utils";
 
 export function Build(name: string) {
     if (name === "problems") {
@@ -127,11 +134,8 @@ function makeStatementContent(
     const statementContent: string = (() => {
         let content = "";
 
-        for (const locale of Object.values(LocaleEnum)) {
-            const statementFileName = `${Constant.StatementFileNamePrefix}.${
-                locale as string
-            }.md`;
-
+        for (const locale in LocaleEnum) {
+            const statementFileName = StatementFileName(locale as LocaleEnum);
             const statementSrcPath = path.join(src, statementFileName);
             const statementDstPath = path.join(dst, statementFileName);
 
@@ -175,14 +179,6 @@ function makeTutorialAndSolutionContent(
     dst: string,
     tocBase: number
 ): string {
-    const getIdx = (ix: number) => {
-        if (ix === 0) {
-            return "";
-        }
-
-        return ix.toString();
-    };
-
     const solutionContentList = (() => {
         const solutionContentList: Array<string> = [];
 
@@ -192,10 +188,11 @@ function makeTutorialAndSolutionContent(
             const tutorialContent: string = (() => {
                 let content = "";
 
-                for (const locale of Object.values(LocaleEnum)) {
-                    const tutorialFileName = `${
-                        Constant.TutorialFileNamePrefix
-                    }${getIdx(i)}.${locale as string}.md`;
+                for (const locale in LocaleEnum) {
+                    const tutorialFileName = TutorialFileName(
+                        locale as LocaleEnum,
+                        GetIdx(i)
+                    );
                     const tutorialFileSrcPath = path.join(
                         src,
                         tutorialFileName
@@ -219,7 +216,7 @@ function makeTutorialAndSolutionContent(
 
             if (tutorialContent.length !== 0) {
                 content += `
-${"#".repeat(tocBase)} Tutorial${getIdx(i)}
+${"#".repeat(tocBase)} Tutorial${GetIdx(i)}
 
 ${tutorialContent}
 `;
@@ -228,17 +225,18 @@ ${tutorialContent}
             const solutionContent: string = (() => {
                 let content = "";
 
-                for (const slug of Object.values(LangSlug)) {
-                    const langSxt = LangExt(slug as LangSlug);
-                    const solutionFileName = `${
-                        Constant.SolutionFileNamePrefix
-                    }${getIdx(i)}.${langSxt}`;
+                for (const langSlug in LangSlug) {
+                    const langSxt = LangExt(langSlug as LangSlug);
+                    const solutionFileName = SolutionFileName(
+                        langSlug as LangSlug,
+                        GetIdx(i)
+                    );
                     const solutionSrcPath = path.join(src, solutionFileName);
                     const solutionDstPath = path.join(dst, solutionFileName);
 
                     if (fs.existsSync(solutionSrcPath)) {
                         content += `
-=== "${LangText[slug as LangSlug]}"
+=== "${LangText[langSlug as LangSlug]}"
 \`\`\`${langSxt}
 --8<-- "${solutionSrcPath}"
 \`\`\`
@@ -253,7 +251,7 @@ ${tutorialContent}
 
             if (solutionContent.length !== 0) {
                 content += `
-${"#".repeat(tocBase)} Solution${getIdx(i)}
+${"#".repeat(tocBase)} Solution${GetIdx(i)}
 
 ${solutionContent}
 `;

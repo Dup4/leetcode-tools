@@ -15,15 +15,31 @@ export interface Locale<T> {
     zh_CN?: T;
 }
 
-const solutionPrefix = "solution";
+const StatementFileNamePrefix = "statement";
+const TutorialFileNamePrefix = "tutorial";
+const SolutionFileNamePrefix = "solution";
 
-export function CodeTemplateFileName(langSlug: LangSlug) {
-    return `${solutionPrefix}-${LangSlug[langSlug]}.${LangExt(langSlug)}`;
+export function StatementFileName(locale: LocaleEnum): string {
+    return `${StatementFileNamePrefix}.${locale as string}.md`;
 }
 
-export function SolutionFileName(langSlug: LangSlug, filename?: string) {
-    const prefix = filename ? filename : solutionPrefix;
-    return `${prefix}.${LangExt(langSlug)}`;
+export function TutorialFileName(locale: LocaleEnum, idx: string): string {
+    return `${TutorialFileNamePrefix}${idx}.${locale as string}.md`;
+}
+
+export function SolutionFileName(
+    langSlug: LangSlug,
+    idx: string,
+    options?: { fileName?: string }
+) {
+    const prefix = options?.fileName ?? SolutionFileNamePrefix;
+    return `${prefix}${idx}.${LangExt(langSlug)}`;
+}
+
+export function CodeTemplateFileName(langSlug: LangSlug) {
+    return `${SolutionFileNamePrefix}-${LangSlug[langSlug]}.${LangExt(
+        langSlug
+    )}`;
 }
 
 export function CodeTemplateReplaceContent(langSlug: LangSlug) {

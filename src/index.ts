@@ -33,6 +33,10 @@ function addProblemProgram(program: Command) {
         return LangSlug.cpp;
     };
 
+    const getDefaultIdx = () => {
+        return "";
+    };
+
     const makeProblemCommand = (name: string) => {
         const subProgram = program.command(name);
         subProgram.description("some operations related to the problem");
@@ -67,7 +71,7 @@ function addProblemProgram(program: Command) {
 
         const codeAction = async () => {
             const options = codeCommand.opts();
-            const { slug, dst } = options;
+            const { slug, dst, idx } = options;
             let { langSlug, fileName } = options;
 
             try {
@@ -83,7 +87,7 @@ function addProblemProgram(program: Command) {
                     langSlug = LangSlug[langSlug as LangSlug];
                 }
 
-                fileName = SolutionFileName(langSlug, fileName);
+                fileName = SolutionFileName(langSlug, idx, { fileName });
 
                 const codeTemplateFileName = CodeTemplateFileName(langSlug);
                 const templateContent = fs
@@ -108,7 +112,7 @@ function addProblemProgram(program: Command) {
 
         const submitAction = async () => {
             const options = submitCommand.opts();
-            const { slug, dst } = options;
+            const { slug, dst, idx } = options;
             let { langSlug, fileName } = options;
 
             try {
@@ -118,7 +122,7 @@ function addProblemProgram(program: Command) {
                     langSlug = LangSlug[langSlug as LangSlug];
                 }
 
-                fileName = SolutionFileName(langSlug, fileName);
+                fileName = SolutionFileName(langSlug, idx, { fileName });
                 const codePath = path.join(dst, fileName);
 
                 Log.Info(`codePath: ${codePath}`);
@@ -143,6 +147,7 @@ function addProblemProgram(program: Command) {
         codeCommand
             .option("-s --slug <string>", "", getDefaultProblemSlug())
             .option("-d --dst <string>", "", getDefaultDst())
+            .option("-i --idx <number>", "", getDefaultIdx())
             .option("--langSlug <string>")
             .option("--fileName <string>")
             .action(codeAction);
@@ -150,6 +155,7 @@ function addProblemProgram(program: Command) {
         submitCommand
             .option("-s --slug <string>", "", getDefaultProblemSlug())
             .option("-d --dst <string>", "", getDefaultDst())
+            .option("-i --idx <number>", "", getDefaultIdx())
             .option("--langSlug <string>")
             .option("--fileName <string>")
             .action(submitAction);
