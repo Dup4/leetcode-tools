@@ -42,7 +42,13 @@ export function CodeTemplateReplaceContent(langSlug: LangSlug) {
         case LangSlug.c:
         case LangSlug.cpp:
         case LangSlug.golang:
+        case LangSlug.java:
+        case LangSlug.javascript:
+        case LangSlug.typescript:
             return "// solution class";
+        case LangSlug.python:
+        case LangSlug.python3:
+            return "# solution class";
         default:
             return "";
     }
