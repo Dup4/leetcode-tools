@@ -251,7 +251,9 @@ export async function Submit(slug: string, langSlug: LangSlug, code: string) {
         runtime: submission.runtime,
         memory: submission.memory,
         status: submission.statusDisplay,
-        timestamp: submission.timestamp,
+        timestamp: new Date(
+            (submission.timestamp as number) * 1000
+        ).toLocaleString(),
         submissionUrl: submission.sourceUrl,
     });
 }
