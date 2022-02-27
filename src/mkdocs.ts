@@ -77,11 +77,24 @@ export async function BuildContest(
 }
 
 function buildProblemContent(src: string, dst: string) {
-    const mdContent = `# ${src.split(path.sep).slice(-1)[0]}
+    const problemJsonFilePath = path.join(
+        src,
+        Constant.ProblemAssetsName,
+        "problem.json"
+    );
 
-${makeContent(src, dst, 2)}
+    let mdContent = "---\n";
 
-`;
+    if (fs.existsSync(problemJsonFilePath)) {
+        const problemJsonContent = JSON.parse(
+            fs.readFileSync(problemJsonFilePath).toString()
+        );
+        mdContent += makeTags(problemJsonContent);
+    }
+
+    mdContent += "\n---\n";
+    mdContent += `# ${src.split(path.sep).slice(-1)[0]}`;
+    mdContent += makeContent(src, dst, 2);
 
     fs.writeFileSync(path.join(dst, "index.md"), mdContent);
 }
@@ -119,11 +132,22 @@ function makeContent(src: string, dst: string, tocBase: number): string {
         fs.rmSync(problemJsonFilePath);
     }
 
-    return `
-${makeStatementContent(src, dst, tocBase)}
+    let content = "";
 
-${makeTutorialAndSolutionContent(src, dst, tocBase)}
-`;
+    content += "\n" + makeStatementContent(src, dst, tocBase);
+    content += "\n" + makeTutorialAndSolutionContent(src, dst, tocBase);
+
+    return content;
+}
+
+function makeTags(problemJsonContent: any) {
+    let content = "tags:\n";
+
+    problemJsonContent?.tag.forEach((tag: any) => {
+        content += `    - ${tag.name}\n`;
+    });
+
+    return content;
 }
 
 function makeStatementContent(
