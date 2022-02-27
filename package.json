@@ -1,6 +1,6 @@
 {
     "name": "leetcode-tools",
-    "version": "1.9.7",
+    "version": "1.10.0",
     "description": "A cli tool to enjoy leetcode!",
     "bin": {
         "lc": "dist/index.js"

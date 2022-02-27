@@ -45,6 +45,7 @@ function addProblemProgram(program: Command) {
         const pullCommand = subProgram.command("pull");
         const codeCommand = subProgram.command("code");
         const submitCommand = subProgram.command("submit");
+        const submissionCommand = subProgram.command("submission");
 
         const newAction = async (slug: string) => {
             const options = newCommand.opts();
@@ -135,6 +136,17 @@ function addProblemProgram(program: Command) {
             }
         };
 
+        const submissionAction = async () => {
+            const options = submissionCommand.opts();
+            const { slug } = options;
+
+            try {
+                await Problem.Submission(slug);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
         newCommand
             .option("-d, --dst <string>", "", getDefaultDst())
             .action(newAction);
@@ -159,6 +171,10 @@ function addProblemProgram(program: Command) {
             .option("--langSlug <string>")
             .option("--fileName <string>")
             .action(submitAction);
+
+        submissionCommand
+            .option("-s --slug <string>", "", getDefaultProblemSlug())
+            .action(submissionAction);
     };
 
     makeProblemCommand("problem");

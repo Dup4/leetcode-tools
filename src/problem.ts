@@ -5,6 +5,7 @@ import {
     ProblemDifficulty,
     TopicTag,
     Config,
+    Submission,
 } from "leetcode-api-typescript";
 import * as fs from "fs";
 import * as path from "path";
@@ -245,7 +246,18 @@ export async function Submit(slug: string, langSlug: LangSlug, code: string) {
         }
     }
 
-    console.table({
+    console.table(getSubmissionDisplay(submission));
+}
+
+export async function Submission(slug: string) {
+    const problem = await Problem.build(slug);
+    const submissions = await problem.getSubmissions();
+
+    console.table(submissions.map((s) => getSubmissionDisplay(s)));
+}
+
+function getSubmissionDisplay(submission: Submission) {
+    return {
         id: submission.id,
         lang: submission.lang,
         runtime: submission.runtime,
@@ -255,5 +267,5 @@ export async function Submit(slug: string, langSlug: LangSlug, code: string) {
             (submission.timestamp as number) * 1000
         ).toLocaleString(),
         submissionUrl: submission.sourceUrl,
-    });
+    };
 }
