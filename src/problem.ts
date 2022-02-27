@@ -249,7 +249,7 @@ export async function Submit(slug: string, langSlug: LangSlug, code: string) {
     console.table(getSubmissionDisplay(submission));
 }
 
-export async function Submission(slug: string) {
+export async function GetSubmissions(slug: string) {
     const problem = await Problem.build(slug);
     const submissions = await problem.getSubmissions();
 

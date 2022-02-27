@@ -141,7 +141,7 @@ function addProblemProgram(program: Command) {
             const { slug } = options;
 
             try {
-                await Problem.Submission(slug);
+                await Problem.GetSubmissions(slug);
             } catch (err) {
                 console.log(err);
             }
