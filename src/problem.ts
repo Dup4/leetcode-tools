@@ -20,7 +20,7 @@ import { Sleep } from "./utils";
 export async function New(slug: string, dst: string) {
     const problem = await Problem.build(slug);
 
-    const targetDirName = `${problem.id}.${problem.slug}`;
+    const targetDirName = `${problem.frontendId}.${problem.slug}`;
 
     dst = path.join(dst, targetDirName);
 

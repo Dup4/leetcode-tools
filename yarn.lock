@@ -1187,10 +1187,10 @@ kind-of@^6.0.2:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
-leetcode-api-typescript@^1.10.2:
-  version "1.10.2"
-  resolved "https://registry.yarnpkg.com/leetcode-api-typescript/-/leetcode-api-typescript-1.10.2.tgz#a37fa21f0a997940158b9c0f976418a97236e513"
-  integrity sha512-6Z3HeSzeNLZF2BW6a0kP9quNmRYXwral03eV0lTVsVle7y5mP8HqSwdaGLtDKjZ8CRkJIG1eXnXiYIuedj3S2A==
+leetcode-api-typescript@^1.10.3:
+  version "1.10.3"
+  resolved "https://registry.yarnpkg.com/leetcode-api-typescript/-/leetcode-api-typescript-1.10.3.tgz#b48a427e02be9eca3bb845825fd218b0108a1289"
+  integrity sha512-EbtPMU9NhJh9cXhAICSHRjhUW9ULl1mEN6bs0RpAKHQjk2oVllYFXwV/ipdsW8G8W9KwxjOi8LaYEVOaTmxVrg==
   dependencies:
     cheerio "^1.0.0-rc.10"
     dotenv "^16.0.0"
