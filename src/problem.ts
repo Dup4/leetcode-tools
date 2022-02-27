@@ -245,11 +245,13 @@ export async function Submit(slug: string, langSlug: LangSlug, code: string) {
         }
     }
 
-    Log.Info(`id: ${submission.id}
-lang: ${submission.lang}
-runtime: ${submission.runtime}
-memory: ${submission.memory}
-status: ${submission.statusDisplay}
-timestamp: ${submission.timestamp}
-submissionUrl: ${submission.getSubmissionUrl()}`);
+    console.table({
+        id: submission.id,
+        lang: submission.lang,
+        runtime: submission.runtime,
+        memory: submission.memory,
+        status: submission.statusDisplay,
+        timestamp: submission.timestamp,
+        submissionUrl: submission.sourceUrl,
+    });
 }
