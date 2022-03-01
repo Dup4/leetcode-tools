@@ -259,11 +259,14 @@ ${tutorialContent}
                     const solutionDstPath = path.join(dst, solutionFileName);
 
                     if (fs.existsSync(solutionSrcPath)) {
+                        const codeContent = fs.readFileSync(solutionSrcPath).toString().split("\n").map(s => "    " + s).join("\n");
+
                         content += `
 === "${LangText[langSlug as LangSlug]}"
-\`\`\`${langExt}
---8<-- "${solutionSrcPath}"
-\`\`\`
+
+    \`\`\`${langExt}
+    ${codeContent}
+    \`\`\`
 `;
 
                         fs.rmSync(solutionDstPath);
