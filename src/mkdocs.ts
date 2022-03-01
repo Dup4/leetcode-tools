@@ -265,7 +265,7 @@ ${tutorialContent}
 === "${LangText[langSlug as LangSlug]}"
 
     \`\`\`${langExt}
-    ${codeContent}
+${codeContent}
     \`\`\`
 `;
 
