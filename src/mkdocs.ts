@@ -250,7 +250,7 @@ ${tutorialContent}
                 let content = "";
 
                 for (const langSlug in LangSlug) {
-                    const langSxt = LangExt(langSlug as LangSlug);
+                    const langExt = LangExt(langSlug as LangSlug);
                     const solutionFileName = SolutionFileName(
                         langSlug as LangSlug,
                         GetIdx(i)
@@ -261,7 +261,7 @@ ${tutorialContent}
                     if (fs.existsSync(solutionSrcPath)) {
                         content += `
 === "${LangText[langSlug as LangSlug]}"
-\`\`\`${langSxt}
+\`\`\`${langExt}
 --8<-- "${solutionSrcPath}"
 \`\`\`
 `;
