@@ -12,9 +12,9 @@
     ],
     "scripts": {
         "build": "rm -rf dist && tsc -p tsconfig.json",
-        "start": "ts-node ./src",
-        "lint": "eslint src --ext .ts",
+        "dev": "ts-node ./src",
         "lc": "node ./dist",
+        "lint": "eslint src --ext .ts",
         "test": "mocha -r ts-node/register test/**/*.ts --timeout 10000"
     },
     "repository": {
