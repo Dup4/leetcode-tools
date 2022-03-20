@@ -300,6 +300,7 @@ function addMkdocsProgram(program: Command) {
 
                 shell.cp("-R", `${src}/*`, dst);
 
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 let navObject: any = null;
 
                 if (fs.existsSync(navTemplateFile)) {

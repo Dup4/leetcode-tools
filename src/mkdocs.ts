@@ -23,6 +23,7 @@ export async function BuildProblemSet(
     src: string,
     dst: string,
     docsRelativePath: string
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
     const navList: Array<Record<string, string>> = [];
 
@@ -54,6 +55,7 @@ export async function BuildContest(
     src: string,
     dst: string,
     docsRelativePath: string
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
     const navList: Array<Record<string, string>> = [];
 
@@ -140,9 +142,11 @@ function makeContent(src: string, dst: string, tocBase: number): string {
     return content;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function makeTags(problemJsonContent: any) {
     let content = "tags:\n";
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     problemJsonContent?.tag.forEach((tag: any) => {
         content += `    - ${tag.name}\n`;
     });
@@ -259,7 +263,12 @@ ${tutorialContent}
                     const solutionDstPath = path.join(dst, solutionFileName);
 
                     if (fs.existsSync(solutionSrcPath)) {
-                        const codeContent = fs.readFileSync(solutionSrcPath).toString().split("\n").map(s => "    " + s).join("\n");
+                        const codeContent = fs
+                            .readFileSync(solutionSrcPath)
+                            .toString()
+                            .split("\n")
+                            .map((s) => "    " + s)
+                            .join("\n");
 
                         content += `
 === "${LangText[langSlug as LangSlug]}"
