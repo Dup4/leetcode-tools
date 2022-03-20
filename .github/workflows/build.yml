@@ -22,12 +22,12 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
+          cache: 'pnpm'
 
       - name: Install Node dependencies
         run: |
-          npm i -g pnpm @antfu/ni
-          ni
+          pnpm i
 
       - name: Build
         run: |
-          nr build
+          pnpm build
