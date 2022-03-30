@@ -1,17 +1,18 @@
 {
-    "editor.formatOnSave": true,
-    "cSpell.words": [
-        "camelcase",
-        "csrfmiddlewaretoken",
-        "csrftoken",
-        "eqeqeq",
-        "langslug",
-        "leetcode",
-        "mkdocs",
-        "noopener",
-        "noreferrer",
-        "notac",
-        "Testcase",
-        "Testcases"
-    ]
+	"editor.formatOnSave": true,
+	"cSpell.words": [
+		"camelcase",
+		"csrfmiddlewaretoken",
+		"csrftoken",
+		"eqeqeq",
+		"langslug",
+		"leetcode",
+		"mkdocs",
+		"noopener",
+		"noreferrer",
+		"notac",
+		"pnpm",
+		"Testcase",
+		"Testcases"
+	]
 }
