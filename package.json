@@ -6,6 +6,7 @@
         "lc": "dist/index.js"
     },
     "files": [
+        "assets/",
         "dist/",
         "LICENSE",
         "README.md"
