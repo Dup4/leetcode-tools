@@ -33,6 +33,7 @@
     "dev": "ts-node ./src",
     "lint": "eslint src --ext .ts",
     "test": "mocha -r ts-node/register test/**/*.ts --timeout 10000",
+    "prepublishOnly": "npm run build",
     "release": "bumpp --commit --push --tag"
   },
   "dependencies": {
