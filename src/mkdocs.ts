@@ -175,6 +175,7 @@ function makeStatementContent(
                     .replace(/<pre><code>\n/g, "<pre><code>")
                     .replace(/<\/pre>/g, "</code></pre>")
                     .replace(/\*/g, "\\*")
+                    .replace(/\$/g, "\\$")
                     .split("\n")
                     .filter((s) => s !== "")
                     .map((s) => "    " + s)
