@@ -16,7 +16,8 @@
     "notac",
     "pnpm",
     "Testcase",
-    "Testcases"
+    "Testcases",
+    "vitest"
   ],
   "typescript.tsdk": "node_modules/typescript/lib",
   "[typescript]": {
