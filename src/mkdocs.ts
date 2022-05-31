@@ -9,7 +9,7 @@ import {
   StatementFileName,
   TutorialFileName,
 } from "./interface";
-import { GetIdx } from "./utils";
+import { EscapeStatement, GetIdx } from "./utils";
 
 export function Build(name: string) {
   if (name === "problems") {
@@ -168,16 +168,11 @@ function makeStatementContent(
       const statementDstPath = path.join(dst, statementFileName);
 
       if (fs.existsSync(statementSrcPath)) {
-        const statementContent = fs
-          .readFileSync(statementSrcPath)
-          .toString()
-          .replace(/<pre>/g, "<pre><code>")
-          .replace(/<pre><code>\n/g, "<pre><code>")
-          .replace(/<\/pre>/g, "</code></pre>")
-          .replace(/\*/g, "\\*")
-          .replace(/\$/g, "\\$")
+        const statementContent = EscapeStatement(
+          fs.readFileSync(statementSrcPath).toString(),
+        )
           .split("\n")
-          .filter((s) => s !== "")
+          .filter((s) => s.length > 0)
           .map((s) => "    " + s)
           .join("\n");
 

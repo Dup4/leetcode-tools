@@ -9,3 +9,12 @@ export function GetIdx(ix: number): string {
 
   return ix.toString();
 }
+
+export function EscapeStatement(statement: string): string {
+  return statement
+    .replace(/<pre>/g, "<pre><code>")
+    .replace(/<pre><code>\n/g, "<pre><code>")
+    .replace(/<\/pre>/g, "</code></pre>")
+    .replace(/\*/g, "\\*")
+    .replace(/\$/g, "\\$");
+}
